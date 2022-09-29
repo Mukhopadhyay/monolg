@@ -1,0 +1,16 @@
+# https://github.com/psf/black
+[tool.black]
+target-version = ["py39"]
+color = false
+line-length = 120
+
+exclude = '''
+/(
+    \.git
+    | \.mypy_cache
+    | \.tox
+    | \.venv
+    | build
+    | venv
+)/
+'''
