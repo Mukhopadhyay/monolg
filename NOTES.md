@@ -16,3 +16,41 @@ That is where we want this project to come in, The `monolg` package should give 
 
 - [ ] Have options to create a session id, which will tie multiple log belonging to a single big task.
 - [ ] There should be multiple ways of connecting to the MongoDB instance, research & implement all of those.
+
+
+## Note
+
+There are 2 ways to specify MongoDB connection string
++ [Standard Connection String Format](https://www.mongodb.com/docs/manual/reference/connection-string/#std-label-connections-standard-connection-string-format)
+
+```
+mongodb://[username:password@]host1[:port1][,...hostN[:portN]][/[defaultauthdb][?options]]
+```
+
+There are various subtypes for different categories as well `Standalone`, `Replica Set`, `Shared Cluster`, `Atlas Deployment`
+Lets start off with `Standalone` we'll add other version in future runs.
+
++ For a standalone
+```
+mongodb://mongodb0.example.com:27017
+```
+
++ For a standalone that [enforces access control](https://www.mongodb.com/docs/manual/tutorial/enable-authentication/):
+```
+mongodb://mongodb0.example.com:27017
+```
+
+
++ [DNS Seed List Connection Format](https://www.mongodb.com/docs/manual/reference/connection-string/#std-label-connections-dns-seedlist)
+
+### Some helpful mongo commands
+* #### Checking available users in mongo
+```mongo
+use admin
+db.system.users.find()
+```
+
+* #### Creating a new user
+```mongo
+db.createUser({user: "mongo", pwd: "mongo", roles: [{role: "userAdminAnyDatabase", db: "admin"}]})
+```
