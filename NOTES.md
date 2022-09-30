@@ -12,11 +12,11 @@ Let's not lie of course it has, and you know settings up Elastic stack will fix 
 
 That is where we want this project to come in, The `monolg` package should give you an easy to use API for logging all of your steps in your local MongoDB instance or even better your MongoDB Cloud (For which you know you have plenty out of those 512 MBs laying around)
 
-## Ideas
+## Feature ideas
 
 - [ ] Have options to create a session id, which will tie multiple log belonging to a single big task.
 - [ ] There should be multiple ways of connecting to the MongoDB instance, research & implement all of those.
-
+- [ ] Allow the users to initialize with their own schema.
 
 ## Note
 
