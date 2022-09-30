@@ -1,3 +1,7 @@
+### VSCode ###
+.vscode/*
+!.vscode/settings.json
+
 # Ignoring all notebooks
 notebooks/
 
