@@ -9,8 +9,10 @@ from monolg._schemas import Base, Info
 
 dt = datetime.now()
 
-b = Base('asd', dt, 'warning')
+print(__file__)
+
+b = Base('asd', 'message', dt, level='warning')
 print(asdict(b))
 
-b = Info('asd', dt)
+b = Info('asd', 'message', dt)
 print(asdict(b))

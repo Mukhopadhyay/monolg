@@ -1,14 +1,16 @@
 from datetime import datetime
 from dataclasses import dataclass
-
+from typing import Optional, Any
 
 @dataclass
 class Base:
     """Base schema class"""
 
     name: str
+    message: str
     time: datetime
     level: str
+    data: Optional[Any] = {}
 
 
 @dataclass

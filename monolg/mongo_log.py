@@ -17,6 +17,7 @@ class Monolg(object):
     PORT: int = 27017
     NAME: str = "monolg"
     LEVEL: str = "info"
+    TIMEOUT: int = 10000
 
     def __init__(
         self,
@@ -38,6 +39,12 @@ class Monolg(object):
 
         self.level = level
 
+        self.filename = None
+        try:
+            self.filename = __file__
+        except NameError:  # This is for notebooks
+            pass
+
         # Following will be populated after .connect() is invoked
         self.db = None
         self.collection = None
@@ -45,16 +52,24 @@ class Monolg(object):
         # Is this instance connected to Mongo??
         self.__connected = False
 
-        self._server_sel_timeout_ms = kwargs.pop("serv_sel_timeout", 1000)
+        self._server_sel_timeout_ms = kwargs.pop("serv_sel_timeout", self.TIMEOUT)
 
-        self.client = pymongo.MongoClient(
-            host=self.host, port=self.port, serverSelectionTimeoutMS=self._server_sel_timeout_ms
-        )
+        if not kwargs.get("client", None):
+            self.client = pymongo.MongoClient(
+                host=self.host, port=self.port, serverSelectionTimeoutMS=self._server_sel_timeout_ms
+            )
+        self.client = kwargs.get("client")
+
+    @classmethod
+    def from_connection(cls, client: pymongo.MongoClient) -> object:
+        return cls(client=client)
 
     def __test_connection(self) -> None:
         try:
             # Test out a connection
-            __test_client = pymongo.MongoClient(self.host, self.port, serverSelectionTimeoutMS=100)
+            __test_client = pymongo.MongoClient(
+                self.host, self.port, serverSelectionTimeoutMS=self._server_sel_timeout_ms
+            )
             __test_client.server_info()
         except pymongo.errors.ServerSelectionTimeoutError as conn_err:
             # This is more confusing then it is helpful
@@ -62,7 +77,6 @@ class Monolg(object):
 
     def connect(self, db: str, collection: str) -> None:
         self.__test_connection()
-        # TODO: Test the client here!! this makes more sense
         self.db: pymongo.database.Database = self.client.get_database(db)
         self.collection: pymongo.collection.Collection = self.db.get_collection(collection)
         self.__connected = True
