@@ -1,5 +1,5 @@
 from datetime import datetime
-from dataclasses import dataclass, field
+from dataclasses import asdict, dataclass, field
 from typing import Optional, Any
 
 
@@ -13,7 +13,6 @@ class Base:
     level: str
     data: Optional[Any] = field(default_factory=dict)
 
-
 @dataclass
 class Info(Base):
     level: str = "info"
@@ -26,7 +25,7 @@ class Warning(Base):
 
 @dataclass
 class Error(Base):
-    error_class: str
+    error_class: str = None
     level: str = "error"
 
 

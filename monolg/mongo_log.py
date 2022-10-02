@@ -3,6 +3,8 @@
 """
 # Built-in modules
 import warnings
+from dataclasses import asdict
+from datetime import datetime
 from typing import Optional
 
 # Third-party
@@ -100,12 +102,22 @@ class Monolg(object):
         self.collection: pymongo.collection.Collection = self.db.get_collection(collection)
         self.__connected = True
 
-    def log(self, level: Optional[str] = None) -> None:
+    def log(self, message: str, level: Optional[str] = None) -> None:
         if not self.__connected:
             msg = "Monolg instance is not connected, Please do object.connect() first!"
             warnings.warn(msg, category=NotConnectedWarning)  # .warn warns just ones
         if not level:
             level = self.level
-        if level not in POSSIBLE_LEVELS:
+        model = self.SCHEMA.get(level)
+        if not model:
             msg = f"Invalid level '{level}' logging on info instead. Use one of {POSSIBLE_LEVELS}"
             warnings.warn(msg, category=InvalidLevel)
+        
+        m = model(
+            name=self.name, message=message,
+            time=datetime.now()
+        )
+        
+        # TODO: Remove
+        print(m)
+        self.collection.insert_one(asdict(m))

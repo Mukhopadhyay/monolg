@@ -14,7 +14,5 @@ b = Info('asd', 'message', dt)
 print(asdict(b))
 
 mlg = Monolg()
-# mlg.connect()
-mlg.log()
-
-print('a')
+mlg.connect()
+mlg.log('This is a test log')

@@ -16,8 +16,8 @@ class ConnectionNotEstablishedErr(Error):
 
 class NotConnectedWarning(Error, Warning):
     def __init__(self, message: str, **kwargs) -> None:
-        self.message = message
         super().__init__(self, message, **kwargs)
+        self.message = message
 
     def __str__(self) -> str:
         return self.message
@@ -25,8 +25,8 @@ class NotConnectedWarning(Error, Warning):
 
 class InvalidLevel(Error, Warning):
     def __init__(self, message: str, **kwargs) -> None:
-        self.message = message
         super().__init__(self, message, **kwargs)
+        self.message
 
     def __str__(self) -> str:
         return self.message
