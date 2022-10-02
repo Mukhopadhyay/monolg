@@ -2,13 +2,17 @@
         Main script containing the classes
 """
 # Built-in modules
+import warnings
 from typing import Optional
 
 # Third-party
 import pymongo
 
 # Custom modules
-from monolg.errors import ConnectionNotEstablishedErr
+from monolg import _schemas
+from monolg.errors import ConnectionNotEstablishedErr, InvalidLevel, NotConnectedWarning
+
+POSSIBLE_LEVELS = ("info", "warning", "error", "critical")
 
 
 class Monolg(object):
@@ -18,6 +22,16 @@ class Monolg(object):
     NAME: str = "monolg"
     LEVEL: str = "info"
     TIMEOUT: int = 10000
+
+    DEFAULT_DB_NAME: str = "Monolg"
+    DEFFAULT_COLLECTION_NAME: str = "Logs"
+
+    SCHEMA = {
+        "info": _schemas.Info,
+        "warning": _schemas.Warning,
+        "error": _schemas.Error,
+        "critical": _schemas.Critical,
+    }
 
     def __init__(
         self,
@@ -58,7 +72,8 @@ class Monolg(object):
             self.client = pymongo.MongoClient(
                 host=self.host, port=self.port, serverSelectionTimeoutMS=self._server_sel_timeout_ms
             )
-        self.client = kwargs.get("client")
+        else:
+            self.client = kwargs.get("client")
 
     @classmethod
     def from_connection(cls, client: pymongo.MongoClient) -> object:
@@ -75,12 +90,22 @@ class Monolg(object):
             # This is more confusing then it is helpful
             raise ConnectionNotEstablishedErr()
 
-    def connect(self, db: str, collection: str) -> None:
+    def connect(self, db: Optional[str] = None, collection: Optional[str] = None) -> None:
+        if not db:
+            db = self.DEFAULT_DB_NAME
+        if not collection:
+            collection = self.DEFFAULT_COLLECTION_NAME
         self.__test_connection()
         self.db: pymongo.database.Database = self.client.get_database(db)
         self.collection: pymongo.collection.Collection = self.db.get_collection(collection)
         self.__connected = True
 
-    def log(self) -> None:
+    def log(self, level: Optional[str] = None) -> None:
         if not self.__connected:
-            print("Instance is not connected to Mongo!")
+            msg = "Monolg instance is not connected, Please do object.connect() first!"
+            warnings.warn(msg, category=NotConnectedWarning)  # .warn warns just ones
+        if not level:
+            level = self.level
+        if level not in POSSIBLE_LEVELS:
+            msg = f"Invalid level '{level}' logging on info instead. Use one of {POSSIBLE_LEVELS}"
+            warnings.warn(msg, category=InvalidLevel)
