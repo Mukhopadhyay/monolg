@@ -20,28 +20,9 @@ That is where we want this project to come in, The `monolg` package should give 
 
 ## Note
 
-There are 2 ways to specify MongoDB connection string
-+ [Standard Connection String Format](https://www.mongodb.com/docs/manual/reference/connection-string/#std-label-connections-standard-connection-string-format)
++ Some helpful info on `MongoClient` object
+https://pymongo.readthedocs.io/en/stable/api/pymongo/mongo_client.html
 
-```
-mongodb://[username:password@]host1[:port1][,...hostN[:portN]][/[defaultauthdb][?options]]
-```
-
-There are various subtypes for different categories as well `Standalone`, `Replica Set`, `Shared Cluster`, `Atlas Deployment`
-Lets start off with `Standalone` we'll add other version in future runs.
-
-+ For a standalone
-```
-mongodb://mongodb0.example.com:27017
-```
-
-+ For a standalone that [enforces access control](https://www.mongodb.com/docs/manual/tutorial/enable-authentication/):
-```
-mongodb://mongodb0.example.com:27017
-```
-
-
-+ [DNS Seed List Connection Format](https://www.mongodb.com/docs/manual/reference/connection-string/#std-label-connections-dns-seedlist)
 
 ### Some helpful mongo commands
 * #### Checking available users in mongo

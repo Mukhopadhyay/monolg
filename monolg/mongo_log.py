@@ -5,7 +5,7 @@
 import warnings
 from dataclasses import asdict
 from datetime import datetime
-from typing import Optional
+from typing import Optional, Dict, Any
 
 # Third-party
 import pymongo
@@ -102,22 +102,59 @@ class Monolg(object):
         self.collection: pymongo.collection.Collection = self.db.get_collection(collection)
         self.__connected = True
 
-    def log(self, message: str, level: Optional[str] = None) -> None:
-        if not self.__connected:
-            msg = "Monolg instance is not connected, Please do object.connect() first!"
-            warnings.warn(msg, category=NotConnectedWarning)  # .warn warns just ones
-        if not level:
-            level = self.level
+    def close(self) -> None:
+        """Closes connection
+            Read more here: 
+            https://pymongo.readthedocs.io/en/stable/api/pymongo/mongo_client.html#pymongo.mongo_client.MongoClient.close
+            
+            A connection pool still keeps running, so if we perform some op this
+            connection will be re-opened.
+            https://stackoverflow.com/questions/20613339/close-never-close-connections-in-pymongo
+        """
+        if self.__connected:
+            self.client.close()
+
+    def __insert_model(self, level: str, **kwargs) -> None:
         model = self.SCHEMA.get(level)
         if not model:
             msg = f"Invalid level '{level}' logging on info instead. Use one of {POSSIBLE_LEVELS}"
             warnings.warn(msg, category=InvalidLevel)
-        
-        m = model(
-            name=self.name, message=message,
-            time=datetime.now()
+        # Instantiate the schema model based on the keyword arguments
+        log_model = model(**kwargs)
+        # Insert into mongo
+        self.collection.insert_one(asdict(log_model))
+
+    def log(self, message: str, name: Optional[str] = None, level: Optional[str] = None, data: Optional[Dict[str, Any]] = {}, **kwargs) -> None:
+        """
+        error_class: str        | In kwargs
+        """
+        if not self.__connected:
+            msg = "Monolg instance is not connected, Please do object.connect() first!"
+            warnings.warn(msg, category=NotConnectedWarning)
+        if not level:
+            level = self.level
+        self.__insert_model(
+            level,
+            name=name if name else self.name,
+            message=message, time=datetime.now(),
+            data=data, **kwargs
         )
-        
-        # TODO: Remove
-        print(m)
-        self.collection.insert_one(asdict(m))
+
+    def info(self, message: str, name: Optional[str] = None, data: Optional[Dict[str, Any]] = {}, **kwargs) -> None:
+        self.log(message, name, 'info', data, **kwargs)
+    
+    def warning(self, message: str, name: Optional[str] = None, data: Optional[Dict[str, Any]] = {}, **kwargs) -> None:
+        self.log(message, name, 'warning', data, **kwargs)
+    
+    def error(self, message: str, name: Optional[str] = None, data: Optional[Dict[str, Any]] = {}, **kwargs) -> None:
+        self.log(message, name, 'error', data, **kwargs)
+    
+    def critical(self, message: str, name: Optional[str] = None, data: Optional[Dict[str, Any]] = {}, **kwargs) -> None:
+        self.log(message, name, 'critical', data, **kwargs)
+    
+    def clear_logs(self) -> None:
+        if not self.__connected:
+            msg = "Monolg instance is not connected, Please do object.connect() first!"
+            warnings.warn(msg, category=NotConnectedWarning)
+        self.collection.delete_many({})
+        print('All logs removed!')
