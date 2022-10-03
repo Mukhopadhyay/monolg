@@ -1,34 +1,70 @@
 from datetime import datetime
 from dataclasses import dataclass, field
-from typing import Optional, Any
+from typing import Optional, Any, Dict
 
+class Schema:
+    
+    def __init__(self, **kwargs):
+        for k, v in kwargs.items():
+            self.__setattr__(k, v)
+    
+    def __str__(self) -> str:
+        return self.message
 
-@dataclass
-class Base:
-    """Base schema class"""
+    def to_dict(self) -> str:
+        return self.__dict__
 
-    name: str
-    message: str
-    time: datetime
-    level: str
-    data: Optional[Any] = field(default_factory=dict)
+class Base(Schema):
+    def __init__(self, name: str, message: str, time: datetime, level: str, data: Optional[Any] = None, **kwargs):
+        super().__init__(
+            name=name, 
+            message=message, 
+            time=time,
+            level=level,
+            data=data,
+            **kwargs
+        )
 
-@dataclass
 class Info(Base):
-    level: str = "info"
+    def __init__(self, name: str, message: str, time: datetime, data: Optional[Any], **kwargs):
+        super().__init__(
+            name=name, 
+            message=message, 
+            time=time,
+            level='info',
+            data=data,
+            **kwargs
+        )
 
-
-@dataclass
 class Warning(Base):
-    level: str = "warning"
+    def __init__(self, name: str, message: str, time: datetime, data: Optional[Any], **kwargs):
+        super().__init__(
+            name=name, 
+            message=message, 
+            time=time,
+            level='warning',
+            data=data,
+            **kwargs
+        )
 
-
-@dataclass
 class Error(Base):
-    error_class: str = None
-    level: str = "error"
+    def __init__(self, name: str, message: str, time: datetime, data: Optional[Any], **kwargs):
+        super().__init__(
+            name=name, 
+            message=message, 
+            time=time,
+            level='error',
+            data=data,
+            **kwargs
+        )
 
-
-@dataclass
 class Critical(Base):
-    level: str = "critical"
+    def __init__(self, name: str, message: str, time: datetime, data: Optional[Any], **kwargs):
+        super().__init__(
+            name=name, 
+            message=message, 
+            time=time,
+            level='critical',
+            data=data,
+            **kwargs
+        )
