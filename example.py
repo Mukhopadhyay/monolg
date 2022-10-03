@@ -4,19 +4,10 @@ from datetime import datetime
 from monolg._schemas import Base, Info, Schema
 
 dt = datetime.now()
+s = Schema()
 
-b = Info(
-    'monolg', 'this is the test message', datetime.now(), {},
-    additional_info='This is additional kwarg'
-)
+print(s)
 
-print(b.to_dict())
-
-# b = Base('asd', 'message', dt, level='warning')
-# print(asdict(b))
-
-# b = Info('asd', 'message', dt)
-# print(asdict(b))
 
 # mlg = Monolg()
 # mlg.connect()

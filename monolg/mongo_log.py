@@ -104,12 +104,12 @@ class Monolg(object):
 
     def close(self) -> None:
         """Closes connection
-            Read more here: 
-            https://pymongo.readthedocs.io/en/stable/api/pymongo/mongo_client.html#pymongo.mongo_client.MongoClient.close
-            
-            A connection pool still keeps running, so if we perform some op this
-            connection will be re-opened.
-            https://stackoverflow.com/questions/20613339/close-never-close-connections-in-pymongo
+        Read more here:
+        https://pymongo.readthedocs.io/en/stable/api/pymongo/mongo_client.html#pymongo.mongo_client.MongoClient.close
+
+        A connection pool still keeps running, so if we perform some op this
+        connection will be re-opened.
+        https://stackoverflow.com/questions/20613339/close-never-close-connections-in-pymongo
         """
         if self.__connected:
             self.client.close()
@@ -124,7 +124,14 @@ class Monolg(object):
         # Insert into mongo
         self.collection.insert_one(asdict(log_model))
 
-    def log(self, message: str, name: Optional[str] = None, level: Optional[str] = None, data: Optional[Dict[str, Any]] = {}, **kwargs) -> None:
+    def log(
+        self,
+        message: str,
+        name: Optional[str] = None,
+        level: Optional[str] = None,
+        data: Optional[Dict[str, Any]] = {},
+        **kwargs,
+    ) -> None:
         """
         error_class: str        | In kwargs
         """
@@ -134,27 +141,24 @@ class Monolg(object):
         if not level:
             level = self.level
         self.__insert_model(
-            level,
-            name=name if name else self.name,
-            message=message, time=datetime.now(),
-            data=data, **kwargs
+            level, name=name if name else self.name, message=message, time=datetime.now(), data=data, **kwargs
         )
 
     def info(self, message: str, name: Optional[str] = None, data: Optional[Dict[str, Any]] = {}, **kwargs) -> None:
-        self.log(message, name, 'info', data, **kwargs)
-    
+        self.log(message, name, "info", data, **kwargs)
+
     def warning(self, message: str, name: Optional[str] = None, data: Optional[Dict[str, Any]] = {}, **kwargs) -> None:
-        self.log(message, name, 'warning', data, **kwargs)
-    
+        self.log(message, name, "warning", data, **kwargs)
+
     def error(self, message: str, name: Optional[str] = None, data: Optional[Dict[str, Any]] = {}, **kwargs) -> None:
-        self.log(message, name, 'error', data, **kwargs)
-    
+        self.log(message, name, "error", data, **kwargs)
+
     def critical(self, message: str, name: Optional[str] = None, data: Optional[Dict[str, Any]] = {}, **kwargs) -> None:
-        self.log(message, name, 'critical', data, **kwargs)
-    
+        self.log(message, name, "critical", data, **kwargs)
+
     def clear_logs(self) -> None:
         if not self.__connected:
             msg = "Monolg instance is not connected, Please do object.connect() first!"
             warnings.warn(msg, category=NotConnectedWarning)
         self.collection.delete_many({})
-        print('All logs removed!')
+        print("All logs removed!")
