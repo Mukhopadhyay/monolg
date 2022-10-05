@@ -13,7 +13,9 @@ import pymongo
 # Custom modules
 from monolg import utils
 from monolg import _schemas
-from monolg.errors import ConnectionNotEstablishedErr, InvalidLevelWarning, NotConnectedWarning
+from monolg.errors import (ConnectionNotEstablishedErr,
+                           InvalidLevelWarning,
+                           NotConnectedWarning)
 
 # Setting up the global configss
 config = RawConfigParser()
@@ -30,7 +32,7 @@ class Monolg(object):
     # These values will be used instead.
     HOST: str = config["MONGO"]["HOST"]
     PORT: int = int(config["MONGO"]["PORT"])
-    TIMEOUT: int = config["MONGO"]["TIMEOUT"]
+    TIMEOUT: int = int(config["MONGO"]["TIMEOUT"])
 
     # Default logger settings
     NAME: str = config["DEFAULT"]["PROJECT_NAME"].capitalize()
@@ -55,30 +57,31 @@ class Monolg(object):
         level: Optional[str] = None,
         serv_sel_timeout: Optional[int] = None,
         client: Optional[pymongo.MongoClient] = None,
-        verbose: Optional[bool] = False,  # prints the logging statement in stdout
+        verbose: Optional[bool] = False,
+        # prints the logging statement in stdout
         **kwargs,
     ) -> None:
-        self.host = host
+        self.host: Optional[str] = host
         if not self.host:
             self.host = self.HOST
-            
-        self.port = port
+
+        self.port: Optional[int] = port
         if not self.port:
             self.port = self.PORT
-            
-        self.name = name
+
+        self.name: Optional[str] = name
         if not self.name:
             self.name = self.NAME
 
-        self.level = level
+        self.level: Optional[str] = level
         if not self.level:
             self.level = self.LEVEL
 
-        self.serv_sel_timeout = serv_sel_timeout
+        self.serv_sel_timeout: Optional[int] = serv_sel_timeout
         if not serv_sel_timeout:
             self.serv_sel_timeout = self.TIMEOUT
 
-        self.filename = None
+        self.filename: Optional[str] = None
         try:
             self.filename = __file__
         except NameError:  # This is for notebooks
@@ -87,8 +90,8 @@ class Monolg(object):
         self.verbose = verbose
 
         # Following will be populated after .connect() is invoked
-        self.db = None
-        self.collection = None
+        self.db: pymongo.database.Database = None
+        self.collection: pymongo.collection.Collection = None
 
         # These will be populated later
         self.db_name = None
@@ -97,38 +100,45 @@ class Monolg(object):
         # Is this instance connected to Mongo??
         self.__connected = False
 
-        if not kwargs.get("client", None):
+        self.client: pymongo.MongoClient = client
+        if not self.client:
             self.client = pymongo.MongoClient(
-                host=self.host, port=self.port, serverSelectionTimeoutMS=self.serv_sel_timeout
+                host=self.host,
+                port=self.port,
+                serverSelectionTimeoutMS=self.serv_sel_timeout
             )
-        else:
-            self.client = kwargs.get("client")
 
     @classmethod
     def from_connection(cls, client: pymongo.MongoClient) -> object:
+        # TODO: If this is how its instantiated
+        # then the connection cannot be reopened
         return cls(client=client)
 
     def __test_connection(self) -> None:
         try:
             # Test out a connection
-            __test_client = pymongo.MongoClient(
-                self.host, self.port, serverSelectionTimeoutMS=self.serv_sel_timeout
+            __test_client: pymongo.MongoClient = pymongo.MongoClient(
+                self.host,
+                self.port,
+                serverSelectionTimeoutMS=self.serv_sel_timeout
             )
             __test_client.server_info()
-        except pymongo.errors.ServerSelectionTimeoutError as conn_err:
+        except pymongo.errors.ServerSelectionTimeoutError:
             # This is more confusing then it is helpful
             raise ConnectionNotEstablishedErr()
 
     def connect(self, db: Optional[str] = None, collection: Optional[str] = None) -> None:
         self.db_name = db
         self.collection_name = collection
-        
+
         if not self.db_name:
             self.db_name = self.DEFAULT_DB_NAME
         if not self.collection_name:
             self.collection_name = self.DEFFAULT_COLLECTION_NAME
+
         self.__test_connection()
-        self.db: pymongo.database.Database = self.client.get_database(self.db_name)
+
+        self.db = self.client.get_database(self.db_name)
         self.collection: pymongo.collection.Collection = self.db.get_collection(self.collection_name)
         self.__connected = True
 
@@ -157,6 +167,7 @@ class Monolg(object):
         if not model:
             msg = f"Invalid level '{level}' logging on info instead. Use one of {POSSIBLE_LEVELS}"
             warnings.warn(msg, category=InvalidLevelWarning)
+            model = self.SCHEMA.get('info')
         # Instantiate the schema model based on the keyword arguments
         log_model = model(**kwargs)
         # Insert into mongo
@@ -167,7 +178,7 @@ class Monolg(object):
         message: str,
         name: Optional[str] = None,
         level: Optional[str] = None,
-        data: Optional[Dict[str, Any]] = {},
+        data: Optional[Dict[str, Any]] = None,
         datetime_as_string: Optional[bool] = False,  # Defaults to setting it as datetime objects
         datetime_fmt: Optional[str] = None,
         verbose: Optional[bool] = True,  # This overrides the instance attribute for verbose
@@ -177,20 +188,19 @@ class Monolg(object):
             msg = "Monolg instance is not connected, Please do object.connect() first!"
             warnings.warn(msg, category=NotConnectedWarning)
         if not level:
-            level = self.level
-        
-        fmt = datetime_fmt
+            level: str = self.level
+
+        fmt: str = datetime_fmt
         if not fmt:
             fmt = self.DT_FMT
-        
+
         dt = utils.get_datetime(datetime_as_string, fmt)
-        
+
         self.__insert_model(
-            level, name=name if name else self.name, message=message, time=dt, data=data, **kwargs
+            level, name=name if name else self.name, message=message, time=dt, data=data,
+            file=self.filename, **kwargs
         )
         if self.verbose and verbose:
-            # stdout = f'{dt} {level.upper()} {message}'
-            # print(stdout)
             utils.print_log(dt, message, level.upper())
 
     def info(self, message: str, name: Optional[str] = None, data: Optional[Dict[str, Any]] = {}, **kwargs) -> None:

@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import Optional, Any
+from typing import Optional, Any, Dict
 
 
 class Schema:
@@ -10,7 +10,7 @@ class Schema:
     def __str__(self) -> str:
         return f"{self.__class__.__name__} object @ {hex(id(self))}"
 
-    def to_dict(self) -> str:
+    def to_dict(self) -> Dict[str, Any]:
         return self.__dict__
 
 
