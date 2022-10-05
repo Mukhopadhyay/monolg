@@ -4,8 +4,7 @@
 # Built-in modules
 import os
 import warnings
-from configparser import ConfigParser
-from datetime import datetime
+from configparser import RawConfigParser
 from typing import Optional, Dict, Any
 
 # Third-party
@@ -17,7 +16,7 @@ from monolg import _schemas
 from monolg.errors import ConnectionNotEstablishedErr, InvalidLevelWarning, NotConnectedWarning
 
 # Setting up the global configss
-config = ConfigParser()
+config = RawConfigParser()
 config.read(os.path.join("monolg", "configs.ini"))
 
 
@@ -91,14 +90,16 @@ class Monolg(object):
         self.db = None
         self.collection = None
 
+        # These will be populated later
+        self.db_name = None
+        self.collection_name = None
+
         # Is this instance connected to Mongo??
         self.__connected = False
 
-        self._server_sel_timeout_ms = kwargs.pop("serv_sel_timeout", self.TIMEOUT)
-
         if not kwargs.get("client", None):
             self.client = pymongo.MongoClient(
-                host=self.host, port=self.port, serverSelectionTimeoutMS=self._server_sel_timeout_ms
+                host=self.host, port=self.port, serverSelectionTimeoutMS=self.serv_sel_timeout
             )
         else:
             self.client = kwargs.get("client")
@@ -111,7 +112,7 @@ class Monolg(object):
         try:
             # Test out a connection
             __test_client = pymongo.MongoClient(
-                self.host, self.port, serverSelectionTimeoutMS=self._server_sel_timeout_ms
+                self.host, self.port, serverSelectionTimeoutMS=self.serv_sel_timeout
             )
             __test_client.server_info()
         except pymongo.errors.ServerSelectionTimeoutError as conn_err:
@@ -119,14 +120,24 @@ class Monolg(object):
             raise ConnectionNotEstablishedErr()
 
     def connect(self, db: Optional[str] = None, collection: Optional[str] = None) -> None:
-        if not db:
-            db = self.DEFAULT_DB_NAME
-        if not collection:
-            collection = self.DEFFAULT_COLLECTION_NAME
+        self.db_name = db
+        self.collection_name = collection
+        
+        if not self.db_name:
+            self.db_name = self.DEFAULT_DB_NAME
+        if not self.collection_name:
+            self.collection_name = self.DEFFAULT_COLLECTION_NAME
         self.__test_connection()
-        self.db: pymongo.database.Database = self.client.get_database(db)
-        self.collection: pymongo.collection.Collection = self.db.get_collection(collection)
+        self.db: pymongo.database.Database = self.client.get_database(self.db_name)
+        self.collection: pymongo.collection.Collection = self.db.get_collection(self.collection_name)
         self.__connected = True
+
+    def reopen(self) -> None:
+        """Reopens the network, reinitializes the MongoClient"""
+        self.client = pymongo.MongoClient(
+            host=self.host, port=self.port, serverSelectionTimeoutMS=self.serv_sel_timeout
+        )
+        self.connect(self.db_name, self.collection_name)
 
     def close(self) -> None:
         """Closes connection
@@ -139,6 +150,7 @@ class Monolg(object):
         """
         if self.__connected:
             self.client.close()
+            self.__connected = False
 
     def __insert_model(self, level: str, **kwargs) -> None:
         model = self.SCHEMA.get(level)
@@ -158,11 +170,9 @@ class Monolg(object):
         data: Optional[Dict[str, Any]] = {},
         datetime_as_string: Optional[bool] = False,  # Defaults to setting it as datetime objects
         datetime_fmt: Optional[str] = None,
+        verbose: Optional[bool] = True,  # This overrides the instance attribute for verbose
         **kwargs,
     ) -> None:
-        """
-        error_class: str        | In kwargs
-        """
         if not self.__connected:
             msg = "Monolg instance is not connected, Please do object.connect() first!"
             warnings.warn(msg, category=NotConnectedWarning)
@@ -178,9 +188,10 @@ class Monolg(object):
         self.__insert_model(
             level, name=name if name else self.name, message=message, time=dt, data=data, **kwargs
         )
-        if self.verbose:
-            stdout = f'{dt} {message}'
-            print(stdout)
+        if self.verbose and verbose:
+            # stdout = f'{dt} {level.upper()} {message}'
+            # print(stdout)
+            utils.print_log(dt, message, level.upper())
 
     def info(self, message: str, name: Optional[str] = None, data: Optional[Dict[str, Any]] = {}, **kwargs) -> None:
         self.log(message, name, "info", data, **kwargs)
