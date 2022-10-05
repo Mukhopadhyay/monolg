@@ -25,14 +25,19 @@ POSSIBLE_LEVELS = ("info", "warning", "error", "critical")
 
 class Monolg(object):
 
+    # Default mongo settings
+    # If None if found on the kwargs of the constructor
+    # These values will be used instead.
     HOST: str = config['MONGO']['HOST']
     PORT: int = int(config['MONGO']['PORT'])
-    NAME: str = config['DEFAULT']['PROJECT_NAME'].capitalize()
-    LEVEL: str = "info"
-    TIMEOUT: int = 10000
+    TIMEOUT: int = config['MONGO']['TIMEOUT']
 
-    DEFAULT_DB_NAME: str = "Monolg"
-    DEFFAULT_COLLECTION_NAME: str = "Logs"
+    # Default logger settings
+    NAME: str = config['DEFAULT']['PROJECT_NAME'].capitalize()
+    LEVEL: str = config['SETTINGS']['LEVEL']
+
+    DEFAULT_DB_NAME: str = config['DEFAULT']['PROJECT_NAME'].capitalize()
+    DEFFAULT_COLLECTION_NAME: str = config['MONGO']['DEFAULT_COLLECTION_NAME']
 
     SCHEMA = {
         "info": _schemas.Info,
@@ -47,7 +52,7 @@ class Monolg(object):
         port: Optional[int] = None,
         name: Optional[str] = None,
         level: Optional[str] = LEVEL,
-        serv_sel_timeout: Optional[int] = 10000
+        serv_sel_timeout: Optional[int] = 10000,
         **kwargs,
     ) -> None:
         self.host = host
