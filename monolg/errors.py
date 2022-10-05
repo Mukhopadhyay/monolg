@@ -23,7 +23,7 @@ class NotConnectedWarning(Error, Warning):
         return self.message
 
 
-class InvalidLevel(Error, Warning):
+class InvalidLevelWarning(Error, Warning):
     def __init__(self, message: str, **kwargs) -> None:
         super().__init__(self, message, **kwargs)
         self.message

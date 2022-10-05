@@ -2,26 +2,32 @@
         Main script containing the classes
 """
 # Built-in modules
+import os
 import warnings
-from dataclasses import asdict
+from configparser import ConfigParser
 from datetime import datetime
 from typing import Optional, Dict, Any
 
 # Third-party
 import pymongo
 
+
+# Setting up the global configss
+config = ConfigParser()
+config.read(os.path.join('monolg', 'configs.ini'))
+
 # Custom modules
 from monolg import _schemas
-from monolg.errors import ConnectionNotEstablishedErr, InvalidLevel, NotConnectedWarning
+from monolg.errors import ConnectionNotEstablishedErr, InvalidLevelWarning, NotConnectedWarning
 
 POSSIBLE_LEVELS = ("info", "warning", "error", "critical")
 
 
 class Monolg(object):
 
-    HOST: str = "localhost"
-    PORT: int = 27017
-    NAME: str = "monolg"
+    HOST: str = config['MONGO']['HOST']
+    PORT: int = int(config['MONGO']['PORT'])
+    NAME: str = config['DEFAULT']['PROJECT_NAME'].capitalize()
     LEVEL: str = "info"
     TIMEOUT: int = 10000
 
@@ -41,14 +47,15 @@ class Monolg(object):
         port: Optional[int] = None,
         name: Optional[str] = None,
         level: Optional[str] = LEVEL,
+        serv_sel_timeout: Optional[int] = 10000
         **kwargs,
     ) -> None:
         self.host = host
         if not self.host:
-            self.host = self.HOST
+            self.host = config['MONGO']['HOST']
         self.port = port
         if not self.port:
-            self.port = self.PORT
+            self.port = int(config['MONGO']['PORT'])
         self.name = name
         if not self.name:
             self.name = self.NAME
@@ -118,11 +125,11 @@ class Monolg(object):
         model = self.SCHEMA.get(level)
         if not model:
             msg = f"Invalid level '{level}' logging on info instead. Use one of {POSSIBLE_LEVELS}"
-            warnings.warn(msg, category=InvalidLevel)
+            warnings.warn(msg, category=InvalidLevelWarning)
         # Instantiate the schema model based on the keyword arguments
         log_model = model(**kwargs)
         # Insert into mongo
-        self.collection.insert_one(asdict(log_model))
+        self.collection.insert_one(log_model.to_dict())
 
     def log(
         self,

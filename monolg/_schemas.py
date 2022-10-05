@@ -8,7 +8,7 @@ class Schema:
             self.__setattr__(k, v)
 
     def __str__(self) -> str:
-        return f'{self.__class__.__name__} object @ {hex(id(self))}'
+        return f"{self.__class__.__name__} object @ {hex(id(self))}"
 
     def to_dict(self) -> str:
         return self.__dict__
