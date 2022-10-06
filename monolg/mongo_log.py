@@ -1,6 +1,5 @@
-"""
-        Main script containing the classes
-"""
+"""Main script containing the classes"""
+
 # Built-in modules
 import os
 import warnings
@@ -58,7 +57,6 @@ class Monolg(object):
         serv_sel_timeout: Optional[int] = None,
         client: Optional[pymongo.MongoClient] = None,
         verbose: Optional[bool] = False,
-        # prints the logging statement in stdout
         **kwargs,
     ) -> None:
         self.host: Optional[str] = host
@@ -84,7 +82,8 @@ class Monolg(object):
         self.filename: Optional[str] = None
         try:
             self.filename = __file__
-        except NameError:  # This is for notebooks
+        except NameError:
+            # In notebooks __file__ won't work
             pass
 
         self.verbose = verbose
