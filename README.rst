@@ -3,25 +3,11 @@ monolg
 """"""
 
 
-.. image:: https://img.shields.io/pypi/v/monolg.svg
-    :target: https://pypi.python.org/pypi/monolg
 
-.. image:: https://img.shields.io/travis/Mukhopadhyay/monolg.svg
-    :target: https://travis-ci.com/Mukhopadhyay/monolg
 
-.. image:: https://readthedocs.org/projects/monolg/badge/?version=latest
-    :target: https://monolg.readthedocs.io/en/latest/?version=latest
-    :alt: Documentation Status
+|pypi| |readthedocs| |pyup| |travis|
 
-.. image:: https://pyup.io/repos/github/Mukhopadhyay/monolg/shield.svg
-    :target: https://pyup.io/repos/github/Mukhopadhyay/monolg/
-    :alt: Updates
-
-|
-
-.. image:: https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square
-    :target: https://makeapullrequest.com
-    :alt: PRs Welcome
+|prs-welcome|
 
 Centralized logging for Python using MongoDB.
 
@@ -63,3 +49,23 @@ Getting started
     mlog = Monolg()
 
     mlog.info('This is a info log')
+
+
+
+.. |prs-welcome| .. image:: https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square
+    :target: https://makeapullrequest.com
+    :alt: PRs Welcome
+
+.. |pyup| .. image:: https://pyup.io/repos/github/Mukhopadhyay/monolg/shield.svg
+    :target: https://pyup.io/repos/github/Mukhopadhyay/monolg/
+    :alt: Updates
+
+.. |readthedocs| .. image:: https://readthedocs.org/projects/monolg/badge/?version=latest
+    :target: https://monolg.readthedocs.io/en/latest/?version=latest
+    :alt: Documentation Status
+
+.. |travis| .. image:: https://img.shields.io/travis/Mukhopadhyay/monolg.svg
+    :target: https://travis-ci.com/Mukhopadhyay/monolg
+
+.. |pypi| .. image:: https://img.shields.io/pypi/v/monolg.svg
+    :target: https://pypi.python.org/pypi/monolg
