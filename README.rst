@@ -1,6 +1,3 @@
-..role:: raw-html(raw)
-    :format: html
-
 """"""
 monolg
 """"""
@@ -20,7 +17,7 @@ monolg
     :target: https://pyup.io/repos/github/Mukhopadhyay/monolg/
     :alt: Updates
 
-<br/>
+|
 
 .. image:: https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square
     :target: https://makeapullrequest.com
