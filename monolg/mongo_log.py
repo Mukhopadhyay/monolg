@@ -57,7 +57,7 @@ class Monolg(object):
         serv_sel_timeout: Optional[int] = None,
         client: Optional[pymongo.MongoClient] = None,
         verbose: Optional[bool] = False,
-        **kwargs,
+        system_log: Optional[bool] = True  # If set to True, then it'll create a seperate collection & log, this package's info
     ) -> None:
         self.host: Optional[str] = host
         if not self.host:
@@ -87,10 +87,12 @@ class Monolg(object):
             pass
 
         self.verbose = verbose
+        self.sys_log = system_log
 
         # Following will be populated after .connect() is invoked
         self.db: pymongo.database.Database = None
         self.collection: pymongo.collection.Collection = None
+        self._sys_collection: pymongo.collection.Collection = None
 
         # These will be populated later
         self.db_name = None
@@ -123,7 +125,6 @@ class Monolg(object):
             )
             __test_client.server_info()
         except pymongo.errors.ServerSelectionTimeoutError:
-            # This is more confusing then it is helpful
             raise ConnectionNotEstablishedErr()
 
     def connect(self, db: Optional[str] = None, collection: Optional[str] = None) -> None:
@@ -132,6 +133,7 @@ class Monolg(object):
 
         if not self.db_name:
             self.db_name = self.DEFAULT_DB_NAME
+
         if not self.collection_name:
             self.collection_name = self.DEFFAULT_COLLECTION_NAME
 
@@ -139,7 +141,11 @@ class Monolg(object):
 
         self.db = self.client.get_database(self.db_name)
         self.collection: pymongo.collection.Collection = self.db.get_collection(self.collection_name)
+        if self.sys_log:
+            self._sys_collection = self.db.get_collection('__monolg')
+
         self.__connected = True
+        self.__sys_connected = True
 
     def reopen(self) -> None:
         """Reopens the network, reinitializes the MongoClient"""
