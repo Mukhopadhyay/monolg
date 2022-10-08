@@ -100,6 +100,8 @@ class Monolg(object):
 
         # Is this instance connected to Mongo??
         self.__connected = False
+        # Is the system log collection connected to Mongo??
+        self.__sys_connected = False
 
         self.client: pymongo.MongoClient = client
         if not self.client:
@@ -143,9 +145,12 @@ class Monolg(object):
         self.collection: pymongo.collection.Collection = self.db.get_collection(self.collection_name)
         if self.sys_log:
             self._sys_collection = self.db.get_collection('__monolg')
+            self.__sys_connected = True
 
         self.__connected = True
-        self.__sys_connected = True
+        if self.__sys_connected:
+            # Log that monolg is connection
+            self.log('monolg connected to mongodb', 'system', 'info', collection=self._sys_collection)
 
     def reopen(self) -> None:
         """Reopens the network, reinitializes the MongoClient"""
@@ -153,6 +158,10 @@ class Monolg(object):
             host=self.host, port=self.port, serverSelectionTimeoutMS=self.serv_sel_timeout
         )
         self.connect(self.db_name, self.collection_name)
+        if self.sys_log:
+            if self.__sys_connected:
+                # Log that monolg is connection
+                self.log('monolg connection reopened', 'system', 'info', collection=self._sys_collection)
 
     def close(self) -> None:
         """Closes connection
@@ -164,10 +173,16 @@ class Monolg(object):
         https://stackoverflow.com/questions/20613339/close-never-close-connections-in-pymongo
         """
         if self.__connected:
+            if self.sys_log:
+                if self.__sys_connected:
+                    # Log that monolg is connection
+                    self.log('monolg connection with mongodb closed', 'system', 'info', collection=self._sys_collection)
+
             self.client.close()
             self.__connected = False
 
-    def __insert_model(self, level: str, **kwargs) -> None:
+
+    def __insert_model(self, level: str, collection: Optional[pymongo.collection.Collection] = None, **kwargs) -> None:
         model = self.SCHEMA.get(level)
         if not model:
             msg = f"Invalid level '{level}' logging on info instead. Use one of {POSSIBLE_LEVELS}"
@@ -176,7 +191,13 @@ class Monolg(object):
         # Instantiate the schema model based on the keyword arguments
         log_model = model(**kwargs)
         # Insert into mongo
-        self.collection.insert_one(log_model.to_dict())
+
+        if isinstance(collection, pymongo.collection.Collection):
+            collection = collection
+        else:
+            collection = self.collection
+
+        collection.insert_one(log_model.to_dict())
 
     def log(
         self,
@@ -206,18 +227,18 @@ class Monolg(object):
             file=self.filename, **kwargs
         )
         if self.verbose and verbose:
-            utils.print_log(dt, message, level.upper())
+            utils.print_log(dt, message, level.upper(), fmt=self.DT_FMT)
 
-    def info(self, message: str, name: Optional[str] = None, data: Optional[Dict[str, Any]] = {}, **kwargs) -> None:
+    def info(self, message: str, name: Optional[str] = None, data: Optional[Dict[str, Any]] = None, **kwargs) -> None:
         self.log(message, name, "info", data, **kwargs)
 
-    def warning(self, message: str, name: Optional[str] = None, data: Optional[Dict[str, Any]] = {}, **kwargs) -> None:
+    def warning(self, message: str, name: Optional[str] = None, data: Optional[Dict[str, Any]] = None, **kwargs) -> None:
         self.log(message, name, "warning", data, **kwargs)
 
-    def error(self, message: str, name: Optional[str] = None, data: Optional[Dict[str, Any]] = {}, **kwargs) -> None:
+    def error(self, message: str, name: Optional[str] = None, data: Optional[Dict[str, Any]] = None, **kwargs) -> None:
         self.log(message, name, "error", data, **kwargs)
 
-    def critical(self, message: str, name: Optional[str] = None, data: Optional[Dict[str, Any]] = {}, **kwargs) -> None:
+    def critical(self, message: str, name: Optional[str] = None, data: Optional[Dict[str, Any]] = None, **kwargs) -> None:
         self.log(message, name, "critical", data, **kwargs)
 
     def clear_logs(self) -> None:
@@ -225,4 +246,7 @@ class Monolg(object):
             msg = "Monolg instance is not connected, Please do object.connect() first!"
             warnings.warn(msg, category=NotConnectedWarning)
         self.collection.delete_many({})
-        print("All logs removed!")
+
+        if self.sys_log:
+            if self.__sys_connected:
+                self.log('All monolg logs cleared', 'system', 'warning', collection=self._sys_collection)

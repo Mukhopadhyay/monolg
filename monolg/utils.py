@@ -23,7 +23,9 @@ def get_datetime(as_string: Optional[bool] = False, fmt: Optional[str] = None) -
     return dt
 
 
-def print_log(dt: Union[datetime, str], message: str, level: str) -> None:
+def print_log(dt: Union[datetime, str], message: str, level: str, fmt: Optional[str] = None) -> None:
+    if fmt:
+        dt = dt.strftime(fmt)
     col = color_map.get(level, Fore.GREEN)
     head = f'{dt} {col}{level}'
     print(head, message)

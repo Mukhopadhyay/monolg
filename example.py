@@ -3,7 +3,7 @@ from datetime import datetime
 
 dt = datetime.now()
 
-mlg = Monolg(verbose=True)
+mlg = Monolg(verbose=True, system_log=True)
 mlg.connect()
 
 mlg.clear_logs()
