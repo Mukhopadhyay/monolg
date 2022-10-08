@@ -30,3 +30,12 @@ class InvalidLevelWarning(Error, Warning):
 
     def __str__(self) -> str:
         return self.message
+
+
+class ConnectionNotReopened(Error):
+    def __init__(self, message: str, **kwargs) -> None:
+        super().__init__(self, message, **kwargs)
+        self.message = message
+
+    def __str__(self) -> str:
+        return self.message

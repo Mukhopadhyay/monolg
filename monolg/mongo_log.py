@@ -12,9 +12,7 @@ import pymongo
 # Custom modules
 from monolg import utils
 from monolg import _schemas
-from monolg.errors import (ConnectionNotEstablishedErr,
-                           InvalidLevelWarning,
-                           NotConnectedWarning)
+from monolg.errors import ConnectionNotEstablishedErr, InvalidLevelWarning, NotConnectedWarning, ConnectionNotReopened
 
 # Setting up the global configss
 config = RawConfigParser()
@@ -26,7 +24,7 @@ POSSIBLE_LEVELS = ("info", "warning", "error", "critical")
 
 class Monolg(object):
 
-    # Default mongo settings
+    # Default settings
     # If None if found on the kwargs of the constructor
     # These values will be used instead.
     HOST: str = config["MONGO"]["HOST"]
@@ -36,7 +34,7 @@ class Monolg(object):
     # Default logger settings
     NAME: str = config["DEFAULT"]["PROJECT_NAME"].capitalize()
     LEVEL: str = config["SETTINGS"]["LEVEL"]
-    DT_FMT: str = config['SETTINGS']['DT_FMT']
+    DT_FMT: str = config["SETTINGS"]["DT_FMT"]
 
     DEFAULT_DB_NAME: str = config["DEFAULT"]["PROJECT_NAME"].capitalize()
     DEFFAULT_COLLECTION_NAME: str = config["MONGO"]["DEFAULT_COLLECTION_NAME"]
@@ -57,20 +55,27 @@ class Monolg(object):
         serv_sel_timeout: Optional[int] = None,
         client: Optional[pymongo.MongoClient] = None,
         verbose: Optional[bool] = False,
-        system_log: Optional[bool] = True  # If set to True, then it'll create a seperate collection & log, this package's info
+        # If set to True, then it'll create a seperate collection & log, this package's info
+        system_log: Optional[bool] = True,
+        **kwargs,
     ) -> None:
+
+        # If nothing passed 'localhost' will be used
         self.host: Optional[str] = host
         if not self.host:
             self.host = self.HOST
 
+        # If nothing passed, 27017 will be used
         self.port: Optional[int] = port
         if not self.port:
             self.port = self.PORT
 
+        # Default name to use for logs, if nothing passed 'Monolg' will be used
         self.name: Optional[str] = name
         if not self.name:
             self.name = self.NAME
 
+        # Defaults to info
         self.level: Optional[str] = level
         if not self.level:
             self.level = self.LEVEL
@@ -86,9 +91,6 @@ class Monolg(object):
             # In notebooks __file__ won't work
             pass
 
-        self.verbose = verbose
-        self.sys_log = system_log
-
         # Following will be populated after .connect() is invoked
         self.db: pymongo.database.Database = None
         self.collection: pymongo.collection.Collection = None
@@ -98,32 +100,36 @@ class Monolg(object):
         self.db_name = None
         self.collection_name = None
 
+        #########
+        # Flags #
+        #########
+
+        self.verbose = verbose
+        self.sys_log = system_log
         # Is this instance connected to Mongo??
         self.__connected = False
         # Is the system log collection connected to Mongo??
         self.__sys_connected = False
+        # Is this object instantiated using the client?
+        self.__is_from_client = kwargs.get("is_from_client", False)
 
         self.client: pymongo.MongoClient = client
         if not self.client:
             self.client = pymongo.MongoClient(
-                host=self.host,
-                port=self.port,
-                serverSelectionTimeoutMS=self.serv_sel_timeout
+                host=self.host, port=self.port, serverSelectionTimeoutMS=self.serv_sel_timeout
             )
 
     @classmethod
     def from_connection(cls, client: pymongo.MongoClient) -> object:
         # TODO: If this is how its instantiated
         # then the connection cannot be reopened
-        return cls(client=client)
+        return cls(client=client, is_from_client=True)
 
     def __test_connection(self) -> None:
         try:
             # Test out a connection
             __test_client: pymongo.MongoClient = pymongo.MongoClient(
-                self.host,
-                self.port,
-                serverSelectionTimeoutMS=self.serv_sel_timeout
+                self.host, self.port, serverSelectionTimeoutMS=self.serv_sel_timeout
             )
             __test_client.server_info()
         except pymongo.errors.ServerSelectionTimeoutError:
@@ -144,16 +150,23 @@ class Monolg(object):
         self.db = self.client.get_database(self.db_name)
         self.collection: pymongo.collection.Collection = self.db.get_collection(self.collection_name)
         if self.sys_log:
-            self._sys_collection = self.db.get_collection('__monolg')
+            self._sys_collection = self.db.get_collection("__monolg")
             self.__sys_connected = True
 
         self.__connected = True
         if self.__sys_connected:
             # Log that monolg is connection
-            self.log('monolg connected to mongodb', 'system', 'info', collection=self._sys_collection)
+            self.log("monolg connected to mongodb", "system", "info", collection=self._sys_collection)
 
     def reopen(self) -> None:
         """Reopens the network, reinitializes the MongoClient"""
+
+        # If this object was creating using a client then raise
+        if self.__is_from_client:
+            raise ConnectionNotReopened(
+                "Cannot re-establish connection. Object was instantiated using client.\nTry instantiating using the constructor."
+            )
+
         self.client = pymongo.MongoClient(
             host=self.host, port=self.port, serverSelectionTimeoutMS=self.serv_sel_timeout
         )
@@ -161,7 +174,7 @@ class Monolg(object):
         if self.sys_log:
             if self.__sys_connected:
                 # Log that monolg is connection
-                self.log('monolg connection reopened', 'system', 'info', collection=self._sys_collection)
+                self.log("monolg connection reopened", "system", "info", collection=self._sys_collection)
 
     def close(self) -> None:
         """Closes connection
@@ -176,22 +189,25 @@ class Monolg(object):
             if self.sys_log:
                 if self.__sys_connected:
                     # Log that monolg is connection
-                    self.log('monolg connection with mongodb closed', 'system', 'info', collection=self._sys_collection)
+                    self.log("monolg connection with mongodb closed", "system", "info", collection=self._sys_collection)
 
             self.client.close()
             self.__connected = False
 
-
     def __insert_model(self, level: str, collection: Optional[pymongo.collection.Collection] = None, **kwargs) -> None:
+        # Model to use
         model = self.SCHEMA.get(level)
+
         if not model:
             msg = f"Invalid level '{level}' logging on info instead. Use one of {POSSIBLE_LEVELS}"
             warnings.warn(msg, category=InvalidLevelWarning)
-            model = self.SCHEMA.get('info')
+            model = self.SCHEMA.get("info")
+
         # Instantiate the schema model based on the keyword arguments
         log_model = model(**kwargs)
-        # Insert into mongo
 
+        # If collection is passed in param, we'll be using that
+        # else we'll end up using the default monolg collection
         if isinstance(collection, pymongo.collection.Collection):
             collection = collection
         else:
@@ -222,23 +238,25 @@ class Monolg(object):
 
         dt = utils.get_datetime(datetime_as_string, fmt)
 
-        self.__insert_model(
-            level, name=name if name else self.name, message=message, time=dt, data=data,
-            file=self.filename, **kwargs
-        )
+        name = name if name else self.name
+        self.__insert_model(level, name=name, message=message, time=dt, data=data, file=self.filename, **kwargs)
         if self.verbose and verbose:
-            utils.print_log(dt, message, level.upper(), fmt=self.DT_FMT)
+            utils.print_log(dt, message, level.upper(), name, fmt=self.DT_FMT)
 
     def info(self, message: str, name: Optional[str] = None, data: Optional[Dict[str, Any]] = None, **kwargs) -> None:
         self.log(message, name, "info", data, **kwargs)
 
-    def warning(self, message: str, name: Optional[str] = None, data: Optional[Dict[str, Any]] = None, **kwargs) -> None:
+    def warning(
+        self, message: str, name: Optional[str] = None, data: Optional[Dict[str, Any]] = None, **kwargs
+    ) -> None:
         self.log(message, name, "warning", data, **kwargs)
 
     def error(self, message: str, name: Optional[str] = None, data: Optional[Dict[str, Any]] = None, **kwargs) -> None:
         self.log(message, name, "error", data, **kwargs)
 
-    def critical(self, message: str, name: Optional[str] = None, data: Optional[Dict[str, Any]] = None, **kwargs) -> None:
+    def critical(
+        self, message: str, name: Optional[str] = None, data: Optional[Dict[str, Any]] = None, **kwargs
+    ) -> None:
         self.log(message, name, "critical", data, **kwargs)
 
     def clear_logs(self) -> None:
@@ -249,4 +267,4 @@ class Monolg(object):
 
         if self.sys_log:
             if self.__sys_connected:
-                self.log('All monolg logs cleared', 'system', 'warning', collection=self._sys_collection)
+                self.log("All monolg logs cleared", "system", "warning", collection=self._sys_collection)

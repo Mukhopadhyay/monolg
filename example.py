@@ -1,11 +1,11 @@
 from monolg import Monolg
-from datetime import datetime
 
-dt = datetime.now()
-
+# Instantiating Monolg
 mlg = Monolg(verbose=True, system_log=True)
+# Connecting to locally running MongoDB
 mlg.connect()
 
+# Clearing any pre-existing logs
 mlg.clear_logs()
 
 # Types of logs
@@ -17,6 +17,7 @@ mlg.critical('This is a critical log')
 
 # Closing the connection
 mlg.close()
+# Reopenning connection
 mlg.reopen()
-
+# Logging again to check the if the connection is established
 mlg.info('This is after reopenning the connection',)
