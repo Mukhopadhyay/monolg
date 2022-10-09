@@ -14,7 +14,7 @@ from monolg import utils
 from monolg import _schemas
 from monolg.errors import ConnectionNotEstablishedErr, InvalidLevelWarning, NotConnectedWarning, ConnectionNotReopened
 
-# Setting up the global configss
+# Setting up the global configs
 config = RawConfigParser()
 config.read(os.path.join("monolg", "configs.ini"))
 
