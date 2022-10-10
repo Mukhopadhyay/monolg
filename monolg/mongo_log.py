@@ -37,7 +37,7 @@ class Monolg(object):
         info:       Default logging level
         warning:    Warnings should be called when something unexpected happens but it isn't code-breaking. (but probably needs attention)
         error:      Some exception that caused the system to malfunction.
-        critical:   Some serious error has occured, that requires your attention.
+        critical:   Some serious error has occured that requires your attention.
 
     """
 
@@ -277,6 +277,9 @@ class Monolg(object):
         self.log(message, name, "critical", data, **kwargs)
 
     def clear_logs(self) -> None:
+        """Clears all logs in the collection that we're using as primary (Not the system logs collection)
+        TODO: This method's necessity is debatable & might be removed soon!
+        """
         if not self.__connected:
             msg = "Monolg instance is not connected, Please do object.connect() first!"
             warnings.warn(msg, category=NotConnectedWarning)
