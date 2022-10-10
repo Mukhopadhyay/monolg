@@ -1,5 +1,5 @@
 import pytest
-
+import datetime
 
 @pytest.fixture
 def schema_to_dict():
@@ -28,4 +28,15 @@ def test_integer_keys():
             "PORT",
         ),
         ("MONGO", "TIMEOUT"),
+    ]
+
+
+@pytest.fixture
+def test_get_dt_types():
+    return [
+        # Kwargs, return_type
+        ({}, datetime.datetime),
+        ({'as_string': True}, str),
+        ({'fmt': '%d-%m-%Y'}, datetime.datetime),
+        ({'as_string': True, 'fmt': '%d-%m-%Y'}, str),
     ]

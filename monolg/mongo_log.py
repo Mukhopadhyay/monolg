@@ -23,6 +23,23 @@ POSSIBLE_LEVELS = ("info", "warning", "error", "critical")
 
 
 class Monolg(object):
+    """Main class for Monolg.
+
+    Args:
+        object (_type_): _description_
+
+    Raises:
+        ConnectionNotEstablishedErr: Gets raised when connection could not be established with Mongo.
+        ConnectionNotReopened: This exception gets raised if the object is instantiated using some classmethod and
+                               then an attempt to reconnect to the mongo db is made (using self.reopen())
+
+    Levels:
+        info:       Default logging level
+        warning:    Warnings should be called when something unexpected happens but it isn't code-breaking. (but probably needs attention)
+        error:      Some exception that caused the system to malfunction.
+        critical:   Some serious error has occured, that requires your attention.
+
+    """
 
     # Default settings
     # If None if found on the kwargs of the constructor
