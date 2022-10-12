@@ -1,3 +1,5 @@
+"""Pytest fixtures"""
+
 import pytest
 import datetime
 
