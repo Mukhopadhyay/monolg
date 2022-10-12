@@ -3,8 +3,9 @@
 # Built-in modules
 import os
 import warnings
-from configparser import RawConfigParser
+from datetime import datetime
 from typing import Optional, Dict, Any
+from configparser import RawConfigParser
 
 # Third-party
 import pymongo
@@ -112,6 +113,7 @@ class Monolg(object):
         self.db: pymongo.database.Database = None
         self.collection: pymongo.collection.Collection = None
         self._sys_collection: pymongo.collection.Collection = None
+        self.__connection_time: datetime = None
 
         # These will be populated later
         self.db_name = None
@@ -142,6 +144,22 @@ class Monolg(object):
         # then the connection cannot be reopened
         return cls(client=client, is_from_client=True)
 
+    @property
+    def connection_time(self) -> datetime:
+        return self.__connection_time
+
+    @property
+    def connected(self) -> bool:
+        return self.__connected
+
+    @property
+    def sys_connected(self) -> bool:
+        return self.__sys_connected
+
+    @property
+    def is_from_client(self) -> bool:
+        return self.__is_from_client
+
     def __test_connection(self) -> None:
         try:
             # Test out a connection
@@ -165,15 +183,18 @@ class Monolg(object):
         self.__test_connection()
 
         self.db = self.client.get_database(self.db_name)
-        self.collection: pymongo.collection.Collection = self.db.get_collection(self.collection_name)
+
+        # Create the system collection first
         if self.sys_log:
             self._sys_collection = self.db.get_collection("__monolg")
+            data = {'database': self.db_name, 'collection': self.collection}
+            self.log(f"monolg connected to mongodb", "system", "info", collection=self._sys_collection, data=data)
             self.__sys_connected = True
 
+        # Create the log collection
+        self.collection: pymongo.collection.Collection = self.db.get_collection(self.collection_name)
         self.__connected = True
-        if self.__sys_connected:
-            # Log that monolg is connection
-            self.log("monolg connected to mongodb", "system", "info", collection=self._sys_collection)
+        self.__connection_time = utils.get_datetime()
 
     def reopen(self) -> None:
         """Reopens the network, reinitializes the MongoClient"""
@@ -191,7 +212,8 @@ class Monolg(object):
         if self.sys_log:
             if self.__sys_connected:
                 # Log that monolg is connection
-                self.log("monolg connection reopened", "system", "info", collection=self._sys_collection)
+                data = {'database': self.db_name, 'collection': self.collection}
+                self.log("monolg connection reopened", "system", "info", collection=self._sys_collection, data=data)
 
     def close(self) -> None:
         """Closes connection

@@ -3,6 +3,7 @@
 import pytest
 import datetime
 
+
 @pytest.fixture
 def schema_to_dict():
     return [({}, {}), ({"a": 1}, {"a": 1}), ({"a": 3 + 1j}, {"a": 3 + 1j})]
@@ -38,7 +39,12 @@ def test_get_dt_types():
     return [
         # Kwargs, return_type
         ({}, datetime.datetime),
-        ({'as_string': True}, str),
-        ({'fmt': '%d-%m-%Y'}, datetime.datetime),
-        ({'as_string': True, 'fmt': '%d-%m-%Y'}, str),
+        ({"as_string": True}, str),
+        ({"fmt": "%d-%m-%Y"}, datetime.datetime),
+        ({"as_string": True, "fmt": "%d-%m-%Y"}, str),
     ]
+
+
+@pytest.fixture
+def possible_levels():
+    return ["info", "warning", "error", "critical"]
