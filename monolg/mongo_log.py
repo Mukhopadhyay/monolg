@@ -180,21 +180,26 @@ class Monolg(object):
         if not self.collection_name:
             self.collection_name = self.DEFFAULT_COLLECTION_NAME
 
+        # Test connection
         self.__test_connection()
 
         self.db = self.client.get_database(self.db_name)
 
+        # Save the connection time
+        self.__connection_time = utils.get_datetime()
+
         # Create the system collection first
         if self.sys_log:
             self._sys_collection = self.db.get_collection("__monolg")
-            data = {'database': self.db_name, 'collection': self.collection}
-            self.log(f"monolg connected to mongodb", "system", "info", collection=self._sys_collection, data=data)
             self.__sys_connected = True
+
+        if self.__sys_connected:
+            data = {'database': self.db_name, 'collection': self.collection_name, 'time': self.__connection_time}
+            self.log(f"monolg connected to mongodb", "system", "info", collection=self._sys_collection, data=data)
 
         # Create the log collection
         self.collection: pymongo.collection.Collection = self.db.get_collection(self.collection_name)
         self.__connected = True
-        self.__connection_time = utils.get_datetime()
 
     def reopen(self) -> None:
         """Reopens the network, reinitializes the MongoClient"""
@@ -212,7 +217,7 @@ class Monolg(object):
         if self.sys_log:
             if self.__sys_connected:
                 # Log that monolg is connection
-                data = {'database': self.db_name, 'collection': self.collection}
+                data = {'database': self.db_name, 'collection': self.collection_name, 'time': self.__connection_time}
                 self.log("monolg connection reopened", "system", "info", collection=self._sys_collection, data=data)
 
     def close(self) -> None:
@@ -265,7 +270,8 @@ class Monolg(object):
         verbose: Optional[bool] = True,  # This overrides the instance attribute for verbose
         **kwargs,
     ) -> None:
-        if not self.__connected:
+        # Check for both regular collection & system collection flag
+        if (not self.__connected) and (not self.__sys_connected):
             msg = "Monolg instance is not connected, Please do object.connect() first!"
             warnings.warn(msg, category=NotConnectedWarning)
         if not level:
@@ -310,3 +316,8 @@ class Monolg(object):
         if self.sys_log:
             if self.__sys_connected:
                 self.log("All monolg logs cleared", "system", "warning", collection=self._sys_collection)
+
+    def _clear_sys_logs(self) -> None:
+        # TODO: Remove
+        if self.sys_connected:
+            self._sys_collection.delete_many({})

@@ -65,3 +65,12 @@ class TestMonolgDefault:
     def test_connection(self):
         self.mlg.connect()
         assert True
+
+"""
+Cases:
+
+* Check if default data value is None and not {}
+* Try logging before connecting
+* Connect
+* Connect & check
+"""
