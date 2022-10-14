@@ -13,7 +13,7 @@ import pymongo
 # Custom modules
 from monolg import utils
 from monolg import _schemas
-from monolg.errors import ConnectionNotEstablishedErr, InvalidLevelWarning, NotConnectedWarning, ConnectionNotReopened
+from monolg.errors import ConnectionNotEstablishedErr, InvalidLevelWarning, NotConnectedError, NotConnectedWarning, ConnectionNotReopened
 
 # Setting up the global configs
 config = RawConfigParser()
@@ -324,7 +324,9 @@ class Monolg(object):
         # Check for both regular collection & system collection flag
         if (not self.__connected) and (not self.__sys_connected):
             msg = "Monolg instance is not connected, Please do object.connect() first!"
-            warnings.warn(msg, category=NotConnectedWarning)
+            # warnings.warn(msg, category=NotConnectedWarning)
+            raise NotConnectedError(msg)
+
         if not level:
             level: str = self.level
 
@@ -383,18 +385,26 @@ class Monolg(object):
         """
         self.log(message, name, "critical", data, **kwargs)
 
-    # TODO: Remove
     def clear_logs(self) -> None:
+        """Clears all logs
+        """
         if not self.__connected:
             msg = "Monolg instance is not connected, Please do object.connect() first!"
             warnings.warn(msg, category=NotConnectedWarning)
-        self.collection.delete_many({})
 
-        if self.sys_log:
-            if self.__sys_connected:
-                self.log("All monolg logs cleared", "system", "warning", collection=self._sys_collection)
+        else:
+            self.collection.delete_many({})
 
-    # TODO: Remove
-    def _clear_sys_logs(self) -> None:
-        if self.sys_connected:
+            if self.sys_log:
+                if self.__sys_connected:
+                    self.log("All monolg logs cleared", "system", "warning", collection=self._sys_collection)
+
+    def clear_sys_logs(self) -> None:
+        """Clears all logs
+        """
+        if not self.__sys_connected:
+            msg = "Monolg instance is not connected, Please do object.connect() first!"
+            warnings.warn(msg, category=NotConnectedWarning)
+        else:
             self._sys_collection.delete_many({})
+

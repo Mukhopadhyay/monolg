@@ -16,7 +16,7 @@ class ConnectionNotEstablishedErr(Error):
         return "Connection not established!"
 
 
-class NotConnectedWarning(Error, Warning):
+class NotConnectedError(Error, Warning):
     """Gets raised if we're trying to perform some operation on the collection
     but the instance is not connected.
     """
@@ -26,6 +26,12 @@ class NotConnectedWarning(Error, Warning):
 
     def __str__(self) -> str:
         return self.message
+
+
+class NotConnectedWarning(NotConnectedError, Warning):
+    """Warning for operations that isnt as serious as a logging attempt
+    """
+    pass
 
 
 class InvalidLevelWarning(Error, Warning):

@@ -3,7 +3,9 @@ from monolg import Monolg
 # Instantiating Monolg
 mlg = Monolg(verbose=True, system_log=True)
 # Connecting to locally running MongoDB
-mlg.connect()
+# mlg.connect()
+
+mlg.clear_logs()
 
 mlg.clear_sys_logs()
 

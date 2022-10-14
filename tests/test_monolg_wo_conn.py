@@ -3,6 +3,7 @@
 import monolg
 import pytest
 import pymongo
+from monolg import errors
 from monolg import mongo_log
 from monolg._schemas import Base
 
@@ -61,8 +62,26 @@ class TestMonolgDefault:
         assert not self.mlg.is_from_client
 
     @pytest.mark.monolg
-    @pytest.mark.xfail
-    def test_connection(self):
-        self.mlg.connect()
-        assert True
+    def test_clear_logs_before_conn(self):
+        # Should warn NotConnectedWarning
+        with pytest.warns(errors.NotConnectedWarning):
+            self.mlg.clear_logs()
+
+    @pytest.mark.monolg
+    def test_clear_sys_logs_bef_conn(self):
+        # Should warn NotConnectedWarning
+        with pytest.warns(errors.NotConnectedWarning):
+            self.mlg.clear_sys_logs()
+
+    @pytest.mark.monolg
+    def test_log_bef_conn(self):
+        with pytest.raises(errors.NotConnectedError):
+            self.mlg.log('...')
+
+    # @pytest.mark.monolg
+    # @pytest.mark.xfail
+    # def test_connection(self):
+    #     self.mlg.connect()
+    #     assert True
+
 
