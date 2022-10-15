@@ -131,6 +131,7 @@ class Monolg(object):
         self.db: pymongo.database.Database = None
         self.collection: pymongo.collection.Collection = None
         self._sys_collection: pymongo.collection.Collection = None
+
         self.__connection_time: datetime = None
 
         # These will be populated later

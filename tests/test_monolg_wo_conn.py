@@ -102,3 +102,4 @@ class TestMonolgViaClient(TestMonolgNonConnected):
     def test_not_is_from_client(self):
         # By default we should have system logs
         assert self.mlg.is_from_client
+

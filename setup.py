@@ -1,6 +1,5 @@
 """The setup script."""
 
-from monolg import *
 from setuptools import setup, find_packages
 
 with open("README.rst") as readme_file:
@@ -12,14 +11,14 @@ with open("HISTORY.rst") as history_file:
 with open("requirements.txt") as req:
     requirements = req.split()
 
-with open("requirements_dev.txt") as req:
-    dev_requirements = req.split()
+with open("requirements_dev.txt") as dev_req:
+    dev_requirements = dev_req.split()
 
 setup(
-    author=AUTHOR,
-    author_email=EMAIL,
-    maintainer=MAINTAINER,
-    maintainer_email=MAINTAINER_EMAIL,
+    author="Pranesh Mukhopadhyay",
+    author_email="praneshmukherjee7@gmail.com",
+    maintainer="Pranesh Mukhopadhyay",
+    maintainer_email="praneshmukherjee7@gmail.com",
     python_requires=">=3.6",
     classifiers=[
         "Intended Audience :: Developers",
