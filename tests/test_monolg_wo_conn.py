@@ -43,7 +43,6 @@ class TestMonolgDefaultProperties:
 
 class TestMonolgNonConnected:
 
-    client = pymongo.MongoClient()
     mlg = monolg.Monolg()
 
     @pytest.mark.monolg
@@ -94,6 +93,12 @@ class TestMonolgNonConnected:
         assert not self.mlg.close()
 
 
-# class TestMonolgNonDefaultKwargs(TestMonolgDefaultCons):
-#     client = pymongo.MongoClient()
-#     mlg = monolg.Monolg('127.0.0.1', 27017)
+class TestMonolgViaClient(TestMonolgNonConnected):
+
+    client = pymongo.MongoClient()
+    mlg = monolg.Monolg.from_client(client)
+
+    @pytest.mark.monolg
+    def test_not_is_from_client(self):
+        # By default we should have system logs
+        assert self.mlg.is_from_client

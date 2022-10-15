@@ -157,7 +157,7 @@ class Monolg(object):
             )
 
     @classmethod
-    def from_connection(cls, client: pymongo.MongoClient) -> object:
+    def from_client(cls, client: pymongo.MongoClient) -> object:
         """_summary_
 
         Args:
