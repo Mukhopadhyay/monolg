@@ -11,7 +11,9 @@ init(autoreset=True)
 color_map = {"INFO": Fore.GREEN, "WARNING": Fore.YELLOW, "ERROR": Fore.MAGENTA, "CRITICAL": Fore.RED}
 
 
-def get_datetime(as_string: Optional[bool] = False, fmt: Optional[str] = None, dt: Optional[datetime] = None) -> Union[str, datetime]:
+def get_datetime(
+    as_string: Optional[bool] = False, fmt: Optional[str] = None, dt: Optional[datetime] = None
+) -> Union[str, datetime]:
     """Returns datetime as either string or python datetime object
 
     Args:

@@ -13,9 +13,7 @@ def test_possible_levels(possible_levels):
         assert l in possible_levels
 
 
-class TestMonolgDefault:
-
-    client = pymongo.MongoClient()
+class TestMonolgDefaultProperties:
     mlg = monolg.Monolg()
 
     @pytest.mark.monolg
@@ -41,6 +39,12 @@ class TestMonolgDefault:
         assert self.mlg.serv_sel_timeout == 10000
         assert self.mlg.level == "info"
         assert self.mlg.name == "Monolg"
+
+
+class TestMonolgNonConnected:
+
+    client = pymongo.MongoClient()
+    mlg = monolg.Monolg()
 
     @pytest.mark.monolg
     def test_non_connected_conn_flag(self):
@@ -76,12 +80,20 @@ class TestMonolgDefault:
     @pytest.mark.monolg
     def test_log_bef_conn(self):
         with pytest.raises(errors.NotConnectedError):
-            self.mlg.log('...')
+            self.mlg.log("...")
 
-    # @pytest.mark.monolg
-    # @pytest.mark.xfail
-    # def test_connection(self):
-    #     self.mlg.connect()
-    #     assert True
+    @pytest.mark.monolg
+    def test_non_conn_reopen(self):
+        with pytest.raises(errors.ConnectionNotReopened):
+            self.mlg.reopen()
+
+    @pytest.mark.monolg
+    def test_non_conn_close(self):
+        # Trying to close the connection that isnt open
+        # Shouldn't raise any errors
+        assert not self.mlg.close()
 
 
+# class TestMonolgNonDefaultKwargs(TestMonolgDefaultCons):
+#     client = pymongo.MongoClient()
+#     mlg = monolg.Monolg('127.0.0.1', 27017)

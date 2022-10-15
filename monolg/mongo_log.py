@@ -13,7 +13,13 @@ import pymongo
 # Custom modules
 from monolg import utils
 from monolg import _schemas
-from monolg.errors import ConnectionNotEstablishedErr, InvalidLevelWarning, NotConnectedError, NotConnectedWarning, ConnectionNotReopened
+from monolg.errors import (
+    ConnectionNotEstablishedErr,
+    InvalidLevelWarning,
+    NotConnectedError,
+    NotConnectedWarning,
+    ConnectionNotReopened,
+)
 
 # Setting up the global configs
 config = RawConfigParser()
@@ -223,7 +229,7 @@ class Monolg(object):
             self.__sys_connected = True
 
         if self.__sys_connected:
-            data = {'database': self.db_name, 'collection': self.collection_name, 'time': self.__connection_time}
+            data = {"database": self.db_name, "collection": self.collection_name, "time": self.__connection_time}
             self.log(f"monolg connected to mongodb", "system", "info", collection=self._sys_collection, data=data)
 
         # Create the log collection
@@ -236,12 +242,13 @@ class Monolg(object):
         Raises:
             ConnectionNotReopened: _description_
         """
-
         # If this object was creating using a client then raise
+        message = "Cannot re-establish connection. Object was instantiated using client.\nTry instantiating using the constructor."
         if self.__is_from_client:
-            raise ConnectionNotReopened(
-                "Cannot re-establish connection. Object was instantiated using client.\nTry instantiating using the constructor."
-            )
+            raise ConnectionNotReopened(message)
+
+        if not self.__connected:
+            raise ConnectionNotReopened(message)
 
         self.client = pymongo.MongoClient(
             host=self.host, port=self.port, serverSelectionTimeoutMS=self.serv_sel_timeout
@@ -250,7 +257,7 @@ class Monolg(object):
         if self.sys_log:
             if self.__sys_connected:
                 # Log that monolg is connection
-                data = {'database': self.db_name, 'collection': self.collection_name, 'time': self.__connection_time}
+                data = {"database": self.db_name, "collection": self.collection_name, "time": self.__connection_time}
                 self.log("monolg connection reopened", "system", "info", collection=self._sys_collection, data=data)
 
     def close(self) -> None:
@@ -263,7 +270,7 @@ class Monolg(object):
         connection will be re-opened.
         https://stackoverflow.com/questions/20613339/close-never-close-connections-in-pymongo
         """
-        if self.__connected:
+        if not self.__connected:
             if self.sys_log:
                 if self.__sys_connected:
                     # Log that monolg is connection
@@ -386,8 +393,7 @@ class Monolg(object):
         self.log(message, name, "critical", data, **kwargs)
 
     def clear_logs(self) -> None:
-        """Clears all logs
-        """
+        """Clears all logs"""
         if not self.__connected:
             msg = "Monolg instance is not connected, Please do object.connect() first!"
             warnings.warn(msg, category=NotConnectedWarning)
@@ -400,11 +406,9 @@ class Monolg(object):
                     self.log("All monolg logs cleared", "system", "warning", collection=self._sys_collection)
 
     def clear_sys_logs(self) -> None:
-        """Clears all logs
-        """
+        """Clears all logs"""
         if not self.__sys_connected:
             msg = "Monolg instance is not connected, Please do object.connect() first!"
             warnings.warn(msg, category=NotConnectedWarning)
         else:
             self._sys_collection.delete_many({})
-

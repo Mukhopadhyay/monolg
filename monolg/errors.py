@@ -6,8 +6,8 @@ class Error(Exception):
 
 
 class ConnectionNotEstablishedErr(Error):
-    """Gets raised if we cannot establish connection with Mongo
-    """
+    """Gets raised if we cannot establish connection with Mongo"""
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         pass
@@ -20,6 +20,7 @@ class NotConnectedError(Error, Warning):
     """Gets raised if we're trying to perform some operation on the collection
     but the instance is not connected.
     """
+
     def __init__(self, message: str, **kwargs) -> None:
         super().__init__(self, message, **kwargs)
         self.message = message
@@ -29,8 +30,8 @@ class NotConnectedError(Error, Warning):
 
 
 class NotConnectedWarning(NotConnectedError, Warning):
-    """Warning for operations that isnt as serious as a logging attempt
-    """
+    """Warning for operations that isnt as serious as a logging attempt"""
+
     pass
 
 
@@ -38,6 +39,7 @@ class InvalidLevelWarning(Error, Warning):
     """This warning is given if given level while logging is not with
     permissible values (info, warning, error, critical)
     """
+
     def __init__(self, message: str, **kwargs) -> None:
         super().__init__(self, message, **kwargs)
         self.message = message
@@ -47,8 +49,8 @@ class InvalidLevelWarning(Error, Warning):
 
 
 class ConnectionNotReopened(Error):
-    """This is raised when we're unable to re-establish mongodb connection
-    """
+    """This is raised when we're unable to re-establish mongodb connection"""
+
     def __init__(self, message: str, **kwargs) -> None:
         super().__init__(self, message, **kwargs)
         self.message = message
