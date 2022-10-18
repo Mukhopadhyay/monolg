@@ -6,9 +6,13 @@
 Welcome to monolg's documentation!
 ==================================
 
-.. toctree::
-   :maxdepth: 2
-   :caption: Contents:
+..  toctree::
+    :maxdepth: 2
+
+    pages/getting-started
+    pages/connecting-monolg
+    pages/settings-and-configs
+    pages/tests
 
 
 

@@ -50,7 +50,12 @@ Getting started
 
     mlog.info('This is a info log')
 
+Docs
+----
 
+.. code:: bash
+
+    $ sphinx-autobuild docs/source docs/build/html
 
 .. |prs-welcome| image:: https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square
     :target: https://makeapullrequest.com
