@@ -1,3 +1,3 @@
-Setting up ``Monolg``
+Setting up the logger
 =====================
 

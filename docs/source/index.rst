@@ -12,13 +12,13 @@ Welcome to monolg's documentation!
     pages/getting-started
     pages/connecting-monolg
     pages/settings-and-configs
+    pages/examples
     pages/tests
 
 
+.. Indices and tables
+.. ==================
 
-Indices and tables
-==================
-
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
+.. * :ref:`genindex`
+.. * :ref:`modindex`
+.. * :ref:`search`
