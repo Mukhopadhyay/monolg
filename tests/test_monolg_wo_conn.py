@@ -42,6 +42,9 @@ class TestMonolgDefaultProperties:
 
 
 class TestMonolgNonConnected:
+    """
+    Tests the Monolg class without the mongo being connected
+    """
 
     mlg = monolg.Monolg()
 

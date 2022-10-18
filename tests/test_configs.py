@@ -8,6 +8,9 @@ from configparser import RawConfigParser
 
 
 class TestConfigINI:
+    """
+    Tests the configs.ini file
+    """
     config_path = "../monolg/monolg/configs.ini"
     config = RawConfigParser()
     config.read(config_path)
