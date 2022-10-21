@@ -15,3 +15,6 @@ class TestMonolg:
         mlg.connect()
         # Check that the connected flag is True
         assert mlg.connected
+        assert mlg.sys_connected
+
+        # Check if the system logs went through
