@@ -1,4 +1,4 @@
-"""Tests for the main `Monolg` class"""
+"""Tests (as much possible) for the main `Monolg` class in the absence of MongoDB"""
 
 import monolg
 import pytest

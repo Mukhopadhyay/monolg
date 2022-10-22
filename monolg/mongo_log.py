@@ -171,18 +171,22 @@ class Monolg(object):
 
     @property
     def connection_time(self) -> datetime:
+        """Returns when the instance was connected to MongoDB"""
         return self.__connection_time
 
     @property
     def connected(self) -> bool:
+        """Returns the connected flag, True means the instance is connected to MongoDB"""
         return self.__connected
 
     @property
     def sys_connected(self) -> bool:
+        """Returns true if the system logs database is created / connected"""
         return self.__sys_connected
 
     @property
     def is_from_client(self) -> bool:
+        """Returns true if this instance was creating using the classmethod Monolg.from_client(client)"""
         return self.__is_from_client
 
     def __test_connection(self) -> None:
