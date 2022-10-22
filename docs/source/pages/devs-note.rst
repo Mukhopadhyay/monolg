@@ -1,23 +1,23 @@
+================
 Developer's Note
 ================
 
 
+-------------
 Documentation
-=============
+-------------
 
-Generating the docs locally...
+The documentation for this project uses ``sphinx``.
 
-------------------------------
+
 Using the sphinx ``make`` file
-------------------------------
 
 .. code:: bash
 
     $ docs/make html
 
---------------------------
+
 Using ``sphinx-autobuild``
---------------------------
 
 .. code:: bash
 
