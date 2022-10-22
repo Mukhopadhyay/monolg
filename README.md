@@ -1,5 +1,9 @@
-# `monolg`
+# monolg
 Centralized logging for Python using MongoDB
+
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](https://makeapullrequest.com) [![ReadTheDocs](https://readthedocs.org/projects/monolg/badge/?version=latest)](https://monolg.readthedocs.io/en/latest/?version=latest) [![PyPi](https://img.shields.io/pypi/v/monolg.svg)](https://pypi.python.org/pypi/monolg)
+
+[![TravisCI](https://img.shields.io/travis/Mukhopadhyay/monolg.svg)](https://travis-ci.com/Mukhopadhyay/monolg)
 
 + Licence: MIT License
 + Documentation: https://monolg.readthedocs.io/
@@ -7,7 +11,7 @@ Centralized logging for Python using MongoDB
 ## What is `monolg`?
 You know those times when you've deployed your applications on the cloud, which logs every step of way precisely onto your `*.log` files, and now everytime you know the application misbehaves you cannot be bothered to look into those log files.
 
-**This never happedn to you?!**
+**This never happened to you?!**
 
 Let's not lie of course it has, and you know settings up Elastic stack will fix alot of your problems, but thats just ALOT OF WORK!!
 
