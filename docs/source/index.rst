@@ -3,8 +3,9 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Welcome to ``monolg``'s documentation!
-==================================
+=====================================
+Welcome to ``monolg``'s documentation
+=====================================
 
 ..  toctree::
     :maxdepth: 2
@@ -14,6 +15,7 @@ Welcome to ``monolg``'s documentation!
     pages/settings-and-configs
     pages/examples
     pages/tests
+    pages/devs-note
 
 |pypi| |readthedocs| |pyup| |travis|
 
