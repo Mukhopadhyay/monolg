@@ -27,7 +27,6 @@ from monolg.errors import (
 config = RawConfigParser()
 config.read(os.path.join("monolg", "configs.ini"))
 
-
 POSSIBLE_LEVELS = ("info", "warning", "error", "critical")
 
 
