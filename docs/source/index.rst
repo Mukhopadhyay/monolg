@@ -16,6 +16,7 @@ Welcome to ``monolg``'s documentation
     pages/examples
     pages/tests
     pages/devs-note
+    pages/monolg
 
 |pypi| |readthedocs| |pyup| |travis|
 
