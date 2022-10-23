@@ -1,4 +1,6 @@
-"""Main script containing the classes"""
+"""
+Main script containing the classes
+"""
 
 # Built-in modules
 import os
@@ -38,7 +40,7 @@ class Monolg(object):
     Raises:
         ConnectionNotEstablishedErr: Gets raised when connection could not be established with Mongo.
         ConnectionNotReopened: This exception gets raised if the object is instantiated using some classmethod and
-                               then an attempt to reconnect to the mongo db is made (using self.reopen())
+        then an attempt to reconnect to the mongo db is made (using self.reopen())
 
     Levels:
         info:       Default logging level
@@ -124,8 +126,7 @@ class Monolg(object):
         try:
             self.filename = __file__
         except NameError:
-            # In notebooks __file__ won't work
-            pass
+            pass  # In notebooks __file__ won't work
 
         # Following will be populated after .connect() is invoked
         self.db: pymongo.database.Database = None
@@ -323,20 +324,32 @@ class Monolg(object):
         verbose: Optional[bool] = True,  # This overrides the instance attribute for verbose
         **kwargs,
     ) -> None:
-        """_summary_
+        """Logs the message and accompanying fields in MongoDB. Most of the arguments
+        to this method are optional if nothing is provided, then the default or the values
+        provided while instantiating `Monolg` will be used.
+
 
         Args:
-            message (str): _description_
-            name (Optional[str], optional): _description_. Defaults to None.
-            level (Optional[str], optional): _description_. Defaults to None.
-            data (Optional[Dict[str, Any]], optional): _description_. Defaults to None.
-            datetime_as_string (Optional[bool], optional): _description_. Defaults to False.
-            verbose (Optional[bool], optional): _description_. Defaults to True.
+            message (str): The message that will be logged.
+            name (Optional[str], optional): Name of this particular log operation, if nothing provided
+                                            value from self.name will be taken, else `Monolg` will be used.
+            level (Optional[str], optional): The level of logging, possible values can be 'info', 'warning',
+                                             'critical' & 'error'. If nothigns provided then the level provided
+                                             while creating the object will be used. If nothing was provided
+                                             level will default to 'info'.
+                                             Defaults to None.
+            data (Optional[Dict[str, Any]], optional): Accepts any dictionary which is to be saved as
+                                                       'data' in the corresponding mongo db entry.
+                                                       Defaults to None.
+            datetime_as_string (Optional[bool], optional): Whether to save the datetime as string or datetime object.
+                                                           Defaults to False.
+            verbose (Optional[bool], optional): If this flag is set then the message will be displayed in
+                                                the standard output as well.
+                                                Defaults to True.
         """
         # Check for both regular collection & system collection flag
         if (not self.__connected) and (not self.__sys_connected):
             msg = "Monolg instance is not connected, Please do object.connect() first!"
-            # warnings.warn(msg, category=NotConnectedWarning)
             raise NotConnectedError(msg)
 
         if not level:
