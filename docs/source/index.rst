@@ -58,19 +58,11 @@ Monolg can be installed from PyPI using the following:
 Getting started
 ---------------
 
-.. code:: python
+Setting up the Monolg is almost as simple as setting up your built-in logger.
+We can get started with logging with just the following few lines of code
 
-    from monolg import Monolg
-    mlog = Monolg()
+.. image:: ./../images/simple.png
 
-    mlog.info('This is a info log')
-
-Docs
-----
-
-.. code:: bash
-
-    $ sphinx-autobuild docs/source docs/build/html
 
 .. |prs-welcome| image:: https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square
     :target: https://makeapullrequest.com
