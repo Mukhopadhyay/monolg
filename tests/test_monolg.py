@@ -6,7 +6,6 @@ import pymongo
 
 
 class TestMonolg:
-
     @pytest.mark.monolg
     def test_normal_instantiation_and_conn(self):
         mlg = monolg.Monolg()

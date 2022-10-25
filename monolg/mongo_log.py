@@ -33,9 +33,6 @@ POSSIBLE_LEVELS = ("info", "warning", "error", "critical")
 class Monolg(object):
     """Main class for Monolg.
 
-    Args:
-        object (_type_): _description_
-
     Raises:
         ConnectionNotEstablishedErr: Gets raised when connection could not be established with Mongo.
         ConnectionNotReopened: This exception gets raised if the object is instantiated using some classmethod and
@@ -329,7 +326,7 @@ class Monolg(object):
 
 
         Args:
-            message (str): The message that will be logged.
+            message (str): The message that is to be logged.
             name (Optional[str], optional): Name of this particular log operation, if nothing provided
                                             value from self.name will be taken, else `Monolg` will be used.
             level (Optional[str], optional): The level of logging, possible values can be 'info', 'warning',
@@ -366,51 +363,64 @@ class Monolg(object):
             utils.print_log(dt, message, level.upper(), name, fmt=self.DT_FMT)
 
     def info(self, message: str, name: Optional[str] = None, data: Optional[Dict[str, Any]] = None, **kwargs) -> None:
-        """_summary_
+        """Logs a message with level INFO on this logger.
 
         Args:
-            message (str): _description_
-            name (Optional[str], optional): _description_. Defaults to None.
-            data (Optional[Dict[str, Any]], optional): _description_. Defaults to None.
+            message (str): The message that is to be logged.
+            name (Optional[str], optional): Name of this particular log operation, if nothing provided
+                                            value from self.name will be taken, else `Monolg` will be used. Defaults to None.
+            data (Optional[Dict[str, Any]], optional): Accepts any dictionary which is to be saved as
+                                                       'data' in the corresponding mongo db entry.
+                                                       Defaults to None.
         """
         self.log(message, name, "info", data, **kwargs)
 
     def warning(
         self, message: str, name: Optional[str] = None, data: Optional[Dict[str, Any]] = None, **kwargs
     ) -> None:
-        """_summary_
+        """Logs a message with level WARNING on this logger
 
         Args:
-            message (str): _description_
-            name (Optional[str], optional): _description_. Defaults to None.
-            data (Optional[Dict[str, Any]], optional): _description_. Defaults to None.
+            message (str): The message that is to be logged.
+            name (Optional[str], optional): Name of this particular log operation, if nothing provided
+                                            value from self.name will be taken, else `Monolg` will be used. Defaults to None.
+            data (Optional[Dict[str, Any]], optional): Accepts any dictionary which is to be saved as
+                                                       'data' in the corresponding mongo db entry.
+                                                       Defaults to None.
         """
         self.log(message, name, "warning", data, **kwargs)
 
     def error(self, message: str, name: Optional[str] = None, data: Optional[Dict[str, Any]] = None, **kwargs) -> None:
-        """_summary_
+        """Logs a message with level ERROR on this logger
 
         Args:
-            message (str): _description_
-            name (Optional[str], optional): _description_. Defaults to None.
-            data (Optional[Dict[str, Any]], optional): _description_. Defaults to None.
+            message (str): The message that is to be logged.
+            name (Optional[str], optional): Name of this particular log operation, if nothing provided
+                                            value from self.name will be taken, else `Monolg` will be used. Defaults to None.
+            data (Optional[Dict[str, Any]], optional): Accepts any dictionary which is to be saved as
+                                                       'data' in the corresponding mongo db entry.
+                                                       Defaults to None.
         """
         self.log(message, name, "error", data, **kwargs)
 
     def critical(
         self, message: str, name: Optional[str] = None, data: Optional[Dict[str, Any]] = None, **kwargs
     ) -> None:
-        """_summary_
+        """Logs a message with level CRITICAL on this logger
 
         Args:
-            message (str): _description_
-            name (Optional[str], optional): _description_. Defaults to None.
-            data (Optional[Dict[str, Any]], optional): _description_. Defaults to None.
+            message (str): The message that is to be logged.
+            name (Optional[str], optional): Name of this particular log operation, if nothing provided
+                                            value from self.name will be taken, else `Monolg` will be used. Defaults to None.
+            data (Optional[Dict[str, Any]], optional): Accepts any dictionary which is to be saved as
+                                                       'data' in the corresponding mongo db entry.
+                                                       Defaults to None.
         """
         self.log(message, name, "critical", data, **kwargs)
 
+    # TODO: Should we keep this??
     def clear_logs(self) -> None:
-        """Clears all logs"""
+        """Clears all logs from the currently set monolg collection. Be careful about using this"""
         if not self.__connected:
             msg = "Monolg instance is not connected, Please do object.connect() first!"
             warnings.warn(msg, category=NotConnectedWarning)
@@ -422,8 +432,9 @@ class Monolg(object):
                 if self.__sys_connected:
                     self.log("All monolg logs cleared", "system", "warning", collection=self._sys_collection)
 
+    # TODO: Same... Should we keep this?
     def clear_sys_logs(self) -> None:
-        """Clears all logs"""
+        """Clears all monolg system generated logs"""
         if not self.__sys_connected:
             msg = "Monolg instance is not connected, Please do object.connect() first!"
             warnings.warn(msg, category=NotConnectedWarning)

@@ -7,6 +7,15 @@
 Welcome to ``monolg``'s documentation
 =====================================
 
+Centralized logging for Python using MongoDB.
+---------------------------------------------
+
+|pypi| |readthedocs| |travis|
+
+|prs-welcome|
+
+.. |pyup|
+
 ..  toctree::
     :maxdepth: 2
 
@@ -16,12 +25,6 @@ Welcome to ``monolg``'s documentation
     pages/examples
     pages/tests
     pages/devs-note
-
-|pypi| |readthedocs| |pyup| |travis|
-
-|prs-welcome|
-
-Centralized logging for Python using MongoDB.
 
 * Licence: MIT License
 * Documentation: https://monolg.readthedocs.io
