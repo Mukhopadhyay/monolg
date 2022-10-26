@@ -1,3 +1,0 @@
-Connecting ``Monolg`` to MongoDB
-================================
-

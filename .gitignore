@@ -1,3 +1,9 @@
+# MKdocs builds
+docs/site
+
+# Sphinx docs
+docs-sphinx
+
 ### VSCode ###
 .vscode/*
 !.vscode/settings.json
