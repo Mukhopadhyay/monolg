@@ -3,7 +3,7 @@ Centralized logging for Python using MongoDB
 
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](https://makeapullrequest.com) [![ReadTheDocs](https://readthedocs.org/projects/monolg/badge/?version=latest)](https://monolg.readthedocs.io/en/latest/?version=latest) [![PyPi](https://img.shields.io/pypi/v/monolg.svg)](https://pypi.python.org/pypi/monolg)
 
-[![TravisCI](https://img.shields.io/travis/Mukhopadhyay/monolg.svg)](https://travis-ci.com/Mukhopadhyay/monolg)
+[![Build Status](https://app.travis-ci.com/Mukhopadhyay/monolg.svg?branch=master)](https://app.travis-ci.com/Mukhopadhyay/monolg)
 
 + Licence: MIT License
 + Documentation: https://monolg.readthedocs.io/
