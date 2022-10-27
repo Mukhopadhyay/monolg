@@ -10,4 +10,3 @@ install:
 # command to run tests
 script:
     - pytest tests -v --cov
-
