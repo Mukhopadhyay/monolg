@@ -1,13 +1,24 @@
+import sys
+import pymongo
 from monolg import Monolg
 
 # Instantiating Monolg
 # mlg = Monolg(verbose=True, system_log=True)
-mlg = Monolg('mongodb://localhost:27017', verbose=True, system_log=True)
+# mlg = Monolg('mongodb://localhost:27017', verbose=True, system_log=True)
 # Connecting to locally running MongoDB
-mlg.connect()
+
+mc = pymongo.MongoClient()
+mlg = Monolg.from_client(mc, verbose=True)
+
+# mlg.connect()
+# mlg.close()
+
+mlg.close()
+mlg.reopen()
+
+sys.exit()
 
 mlg.clear_logs()
-
 mlg.clear_sys_logs()
 
 # Clearing any pre-existing logs
