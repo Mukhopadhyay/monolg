@@ -19,6 +19,8 @@ pytest tests -v --cov
 pytest tests/test_monolg.py -v --cov
 ```
 
+**NOTE**: The script test_monolg.py is written for scenarios where MongoDB is available.
+
 __Markers__
 
 Following the different [pytest markers](https://docs.pytest.org/en/7.1.x/example/markers.html) used in this test suite.

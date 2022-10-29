@@ -155,7 +155,7 @@ class Monolg(object):
             )
 
     @classmethod
-    def from_client(cls, client: pymongo.MongoClient) -> object:
+    def from_client(cls, client: pymongo.MongoClient, **kwargs) -> object:
         """_summary_
 
         Args:
@@ -164,7 +164,7 @@ class Monolg(object):
         Returns:
             object: _description_
         """
-        return cls(client=client, is_from_client=True)
+        return cls(client=client, is_from_client=True, **kwargs)
 
     @property
     def connection_time(self) -> datetime:
@@ -272,7 +272,7 @@ class Monolg(object):
         connection will be re-opened.
         https://stackoverflow.com/questions/20613339/close-never-close-connections-in-pymongo
         """
-        if not self.__connected:
+        if self.__connected:
             if self.sys_log:
                 if self.__sys_connected:
                     # Log that monolg is connection
