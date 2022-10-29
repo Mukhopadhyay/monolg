@@ -1,9 +1,10 @@
 from monolg import Monolg
 
 # Instantiating Monolg
-mlg = Monolg(verbose=True, system_log=True)
+# mlg = Monolg(verbose=True, system_log=True)
+mlg = Monolg('mongodb://localhost:27017', verbose=True, system_log=True)
 # Connecting to locally running MongoDB
-# mlg.connect()
+mlg.connect()
 
 mlg.clear_logs()
 
