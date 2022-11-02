@@ -7,16 +7,16 @@ from monolg import Monolg
 # mlg = Monolg('mongodb://localhost:27017', verbose=True, system_log=True)
 # Connecting to locally running MongoDB
 
-mc = pymongo.MongoClient()
-mlg = Monolg.from_client(mc, verbose=True)
+# mc = pymongo.MongoClient()
+mlg = Monolg(verbose=True)
 
-# mlg.connect()
+mlg.connect()
 # mlg.close()
 
-mlg.close()
-mlg.reopen()
+# mlg.close()
+# mlg.reopen()
 
-sys.exit()
+# sys.exit()
 
 mlg.clear_logs()
 mlg.clear_sys_logs()
