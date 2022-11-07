@@ -1,9 +1,10 @@
 site_name: Monolg
 site_url: https://monolg.readthedocs.io/en/latest/
 nav:
-    - Getting started: index.md
+    - Getting started: getting-started.md
     - Connecting Monolg to MongoDB: connecting-monolg.md
     - Setting up the logger: settings-and-configs.md
     - Usage Examples: examples.md
     - Developer's Note: devs-note.md
-theme: readthedocs
+theme:
+    name: material

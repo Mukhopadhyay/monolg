@@ -17,19 +17,7 @@ Let's not lie of course it has, and you know settings up Elastic stack will fix 
 
 That is where we want this project to come in, The monolg package should give you an easy to use API for logging all of your steps in your local MongoDB instance or even better your `MongoDB` Cloud (For which you know you have plenty out of those 512 MBs laying around)
 
-## Installation
 
-Monolg can be installed from PyPI using the following:
+## Where can you use it?
 
-```bash
-$ pip install monolg
-```
-
-## Getting started
-
-```python
-from monolg import Monolg
-
-mlog = Monolg()
-mlog.info("Welcome to monolg")
-```
+## What it is not
