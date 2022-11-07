@@ -76,7 +76,7 @@ class Monolg(object):
         level: Optional[str] = None,
         serv_sel_timeout: Optional[int] = None,
         client: Optional[pymongo.MongoClient] = None,
-        verbose: Optional[bool] = False,
+        verbose: Optional[bool] = True,
         # If set to True, then it'll create a seperate collection & log, this package's info
         system_log: Optional[bool] = True,
         **kwargs,
@@ -90,7 +90,7 @@ class Monolg(object):
             level (Optional[str], optional): _description_. Defaults to None.
             serv_sel_timeout (Optional[int], optional): _description_. Defaults to None.
             client (Optional[pymongo.MongoClient], optional): _description_. Defaults to None.
-            verbose (Optional[bool], optional): _description_. Defaults to False.
+            verbose (Optional[bool], optional): _description_. Defaults to True.
             system_log (Optional[bool], optional): _description_. Defaults to True.
         """
 
@@ -143,6 +143,8 @@ class Monolg(object):
         self.sys_log = system_log
         # Is this instance connected to Mongo??
         self.__connected = False
+        # Was this instance previously connected?
+        self.__connected_before = False
         # Is the system log collection connected to Mongo??
         self.__sys_connected = False
         # Is this object instantiated using the client?
@@ -185,6 +187,11 @@ class Monolg(object):
     def is_from_client(self) -> bool:
         """Returns true if this instance was creating using the classmethod Monolg.from_client(client)"""
         return self.__is_from_client
+
+    @property
+    def connected_before(self) -> bool:
+        """Returns true if this instance was connected to mongo before"""
+        return self.__connected_before
 
     def __test_connection(self) -> None:
         """_summary_
@@ -237,6 +244,7 @@ class Monolg(object):
         # Create the log collection
         self.collection: pymongo.collection.Collection = self.db.get_collection(self.collection_name)
         self.__connected = True
+        self.__connected_before = True
 
     def reopen(self) -> None:
         """_summary_
@@ -249,7 +257,8 @@ class Monolg(object):
         if self.__is_from_client:
             raise ConnectionNotReopened(message)
 
-        if not self.__connected:
+        message = "This instance was not connected previous, try doing object.connect() first."
+        if not self.__connected_before:
             raise ConnectionNotReopened(message)
 
         self.client = pymongo.MongoClient(
