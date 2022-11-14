@@ -34,7 +34,20 @@ Following the different [pytest markers](https://docs.pytest.org/en/7.1.x/exampl
 pytest -v -m configs
 ```
 
-## Test cases
+## Test cases for `monolg`
+
+### Establishing connection
+
+* Try connecting `monolg` when MongoDB is not running (using default params)
+**Expected result:** Appropriate exception should be thrown
+
+* Try connecting `monolg` when MongoDB is running (using default params)
+**Expected result:** The instance should be able to make a connection & if the `sys_log` flag is enabled then the connection established log should be in the system log collection.
+
+* Try connecting `monolg` using a connection string when MongoDB is not running.
+
+
+* Try connecting `monolg` using a connection string when MongoDB is running.
 
 - [ ] Try connecting to Mongo (While Mongo is running)
 - [ ] `.connect` while mongo is not running.
@@ -45,4 +58,11 @@ pytest -v -m configs
 - [ ] After closing the connecting and reopening it, we should have 2 entries in system logs with the same datetime (one with connection message and one with reopen message)
 - [ ] Check the flags before & after connecting
 - [ ] After closing collection even sys logs shouldn't go through
+
+<!-- |**ID**|**Scenario**|**Precondition**|**Expected result**|Implemented|
+|:-----|:-----------|:---------------|:------------------|:----------|
+|1|Try connecting to `monolg` with default params|MongoDB is not running|Appropriate error message should be displayed||
+|2|Try connecting to `monolg` with default params|MongoDB is running|Connection should be established||
+|3|Try and connect to `monolg` using a connection string|MongoDB is not running|Appropriate error message should be displayed||
+|4|Try and connect to `monolg` using a connection string|MongoDB is running|Connection should be established|| -->
 

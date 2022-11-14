@@ -35,3 +35,8 @@ db.system.users.find()
 ```mongo
 db.createUser({user: "mongo", pwd: "mongo", roles: [{role: "userAdminAnyDatabase", db: "admin"}]})
 ```
+
+## Project setup todos
+
++ [ ] Setup precommit hooks
++ [ ] travisci bot

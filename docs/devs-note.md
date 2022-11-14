@@ -19,7 +19,7 @@ pytest tests -v --cov
 pytest tests/test_monolg.py -v --cov
 ```
 
-**NOTE**: The script test_monolg.py is written for scenarios where MongoDB is available.
+**NOTE**: The script `test_monolg.py` is written for scenarios where MongoDB is available, which is why the file is excluded `pytest.ini` file.
 
 __Markers__
 
