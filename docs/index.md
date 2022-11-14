@@ -19,5 +19,7 @@ That is where we want this project to come in, The monolg package should give yo
 
 
 ## Where can you use it?
+You use `monolg` for pretty much any projects where you know keeping logs and sharing them is a necessary part. Granted it comes with an extra step of having a MongoDB instance up and running, but it does makes your life alot easier when it comes to identifying runtime issues, performance evaluations and debugging.
 
-## What it is not
+
+<!-- ## What it is not -->
