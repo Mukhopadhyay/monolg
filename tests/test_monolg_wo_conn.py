@@ -49,47 +49,56 @@ class TestMonolgNonConnected:
     mlg = monolg.Monolg()
 
     @pytest.mark.monolg
+    @pytest.mark.unavailable
     def test_non_connected_conn_flag(self):
         # Before connecting the connection should be false
         assert not self.mlg.connected
 
     @pytest.mark.monolg
+    @pytest.mark.unavailable
     def test_non_connected_conn_time(self):
         assert not self.mlg.connection_time
 
     @pytest.mark.monolg
+    @pytest.mark.unavailable
     def test_default_sys_log(self):
         # By default we should have system logs
         assert not self.mlg.sys_connected
 
     @pytest.mark.monolg
+    @pytest.mark.unavailable
     def test_not_is_from_client(self):
         # By default we should have system logs
         assert not self.mlg.is_from_client
 
     @pytest.mark.monolg
+    @pytest.mark.unavailable
     def test_clear_logs_before_conn(self):
         # Should warn NotConnectedWarning
         with pytest.warns(errors.NotConnectedWarning):
             self.mlg.clear_logs()
 
     @pytest.mark.monolg
+    @pytest.mark.unavailable
     def test_clear_sys_logs_bef_conn(self):
         # Should warn NotConnectedWarning
         with pytest.warns(errors.NotConnectedWarning):
             self.mlg.clear_sys_logs()
 
     @pytest.mark.monolg
+    @pytest.mark.unavailable
     def test_log_bef_conn(self):
         with pytest.raises(errors.NotConnectedError):
             self.mlg.log("...")
 
     @pytest.mark.monolg
+    @pytest.mark.unavailable
     def test_non_conn_reopen(self):
         with pytest.raises(errors.ConnectionNotReopened):
             self.mlg.reopen()
 
     @pytest.mark.monolg
+    @pytest.mark.unavailable
     def test_non_conn_close(self):
         # Trying to close the connection that isnt open
         # Shouldn't raise any errors
@@ -102,6 +111,7 @@ class TestMonolgViaClient(TestMonolgNonConnected):
     mlg = monolg.Monolg.from_client(client)
 
     @pytest.mark.monolg
+    @pytest.mark.unavailable
     def test_not_is_from_client(self):
         # By default we should have system logs
         assert self.mlg.is_from_client
