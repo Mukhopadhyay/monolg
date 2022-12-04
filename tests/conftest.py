@@ -17,6 +17,7 @@ def schema_to_dict():
 #     mongolg_db = pymongo.MongoClient()
 #     return mongolg_db['Logs'], mongolg_db['__monolg']
 
+
 @pytest.fixture
 def config_sections() -> Tuple[str, str, str]:
     return ("DEFAULT", "SETTINGS", "MONGO")
