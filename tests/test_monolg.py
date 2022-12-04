@@ -1,29 +1,63 @@
 """Tests for the Monolg class when MongoDB is available"""
 
+import bson
 import pytest
 import monolg
 import pymongo
+from pymongo.collection import Collection
+from typing import Optional, Tuple
 
 
 class TestMonolg:
 
+    client: pymongo.MongoClient = None
+    db: pymongo.MongoClient = None
+
+    def get_collections(self, db: Optional[str] = None, log_collection: Optional[str] = None, system_collection: Optional[str] = None) -> Tuple[Collection, Collection]:
+        self.client = pymongo.MongoClient()
+        if not db:
+            db = 'Monolg'
+        if not log_collection:
+            log_collection = 'Logs'
+        if not system_collection:
+            system_collection = '__monolg'
+        self.db = self.client[db]
+        return self.db[log_collection], self.db[system_collection]
+
     @pytest.mark.monolg
     @pytest.mark.available
-    def test_connect_monolg(self):
+    def test_default_sys_logs(self):
         """
         Case: Connecting the Monolg instance to the running MongoDB
         Precondition: MongoDB should be available on localhost:27017
         """
         mlg = monolg.Monolg()           # Monolg instance
-        client = pymongo.MongoClient()  # PyMongo intance for checking the logs
-        # Try to establish connection
-        mlg.connect()
-        # Check that the connected flag is True
-        assert mlg.connected
-        assert mlg.sys_connected
 
-        # Check if the system logs went through
-        monolg_db = client.Monolg
-        logs_collection = monolg_db['Logs']
-        sys_logs_collection = monolg_db['__monolg']
+        # Clearing the collections
+        logs, system = self.get_collections()
+        logs.delete_many({})
+        system.delete_many({})
 
+        mlg.connect()                   # Try to establish connection
+
+        assert mlg.connected            # Default logs collection should be connected
+        assert mlg.sys_connected        # System logs collection should be connected
+
+
+        mlg.close()                     # Close the connection
+
+        # ----------------------------------------------------
+        # Check whatever we're putting in Mongo is right
+        # ----------------------------------------------------
+        sys_logs = list(system.find({}))
+
+        assert len(sys_logs) == 2       # There should be 2 logs, open and close
+
+        for l in sys_logs:
+            assert l['name'] == 'system'
+            assert isinstance(l['_id'], bson.ObjectId)
+
+        assert sys_logs[0]['message'] == 'monolg connected to mongodb'
+        assert sys_logs[1]['message'] == 'monolg connection with mongodb closed'
+
+        self.client.close()
