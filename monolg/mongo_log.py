@@ -77,6 +77,7 @@ class Monolg(object):
         serv_sel_timeout: Optional[int] = None,
         client: Optional[pymongo.MongoClient] = None,
         verbose: Optional[bool] = True,
+        sys_verbose: Optional[bool] = True,
         # If set to True, then it'll create a seperate collection & log, this package's info
         system_log: Optional[bool] = True,
         **kwargs,
@@ -91,6 +92,7 @@ class Monolg(object):
             serv_sel_timeout (Optional[int], optional): _description_. Defaults to None.
             client (Optional[pymongo.MongoClient], optional): _description_. Defaults to None.
             verbose (Optional[bool], optional): _description_. Defaults to True.
+            sys_verbose (Optional[bool], optional): _description_. Defaults to True.
             system_log (Optional[bool], optional): _description_. Defaults to True.
         """
 
@@ -140,6 +142,8 @@ class Monolg(object):
         #########
 
         self.verbose = verbose
+        self.sys_verbose = sys_verbose
+
         self.sys_log = system_log
         # Is this instance connected to Mongo??
         self.__connected = False
@@ -239,7 +243,14 @@ class Monolg(object):
 
         if self.__sys_connected:
             data = {"database": self.db_name, "collection": self.collection_name, "time": self.__connection_time}
-            self.log(f"monolg connected to mongodb", "system", "info", collection=self._sys_collection, data=data)
+            self.log(
+                f"monolg connected to mongodb",
+                "system",
+                "info",
+                collection=self._sys_collection,
+                data=data,
+                verbose=self.sys_verbose,
+            )
 
         # Create the log collection
         self.collection: pymongo.collection.Collection = self.db.get_collection(self.collection_name)
@@ -269,7 +280,14 @@ class Monolg(object):
             if self.__sys_connected:
                 # Log that monolg is connection
                 data = {"database": self.db_name, "collection": self.collection_name, "time": self.__connection_time}
-                self.log("monolg connection reopened", "system", "info", collection=self._sys_collection, data=data)
+                self.log(
+                    "monolg connection reopened",
+                    "system",
+                    "info",
+                    collection=self._sys_collection,
+                    data=data,
+                    verbose=self.sys_verbose,
+                )
 
     def close(self) -> None:
         """Closes connection
@@ -285,7 +303,13 @@ class Monolg(object):
             if self.sys_log:
                 if self.__sys_connected:
                     # Log that monolg is connection
-                    self.log("monolg connection with mongodb closed", "system", "info", collection=self._sys_collection)
+                    self.log(
+                        "monolg connection with mongodb closed",
+                        "system",
+                        "info",
+                        collection=self._sys_collection,
+                        verbose=self.sys_verbose,
+                    )
 
             self.client.close()
             self.__connected = False
@@ -439,7 +463,13 @@ class Monolg(object):
 
             if self.sys_log:
                 if self.__sys_connected:
-                    self.log("All monolg logs cleared", "system", "warning", collection=self._sys_collection)
+                    self.log(
+                        "All monolg logs cleared",
+                        "system",
+                        "warning",
+                        collection=self._sys_collection,
+                        verbose=self.sys_verbose,
+                    )
 
     # TODO: Same... Should we keep this?
     def clear_sys_logs(self) -> None:

@@ -1,6 +1,9 @@
 """Pytest fixtures"""
 
 import pytest
+import pymongo
+from pymongo.collection import Collection
+from typing import Tuple, Dict
 import datetime
 
 
@@ -9,13 +12,19 @@ def schema_to_dict():
     return [({}, {}), ({"a": 1}, {"a": 1}), ({"a": 3 + 1j}, {"a": 3 + 1j})]
 
 
+# @pytest.fixture
+# def log_collections() -> Tuple[Collection, Collection]:
+#     mongolg_db = pymongo.MongoClient()
+#     return mongolg_db['Logs'], mongolg_db['__monolg']
+
+
 @pytest.fixture
-def config_sections():
+def config_sections() -> Tuple[str, str, str]:
     return ("DEFAULT", "SETTINGS", "MONGO")
 
 
 @pytest.fixture
-def config_keys():
+def config_keys() -> Tuple[Dict[str, tuple]]:
     return (
         {"DEFAULT": ("PROJECT_NAME", "PROJECT_VERSION", "AUTHOR_NAME", "AUTHOR_EMAIL")},
         {"SETTINGS": ("DT_FMT", "LEVEL")},
