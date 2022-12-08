@@ -1,8 +1,6 @@
 """Pytest fixtures"""
 
 import pytest
-import pymongo
-from pymongo.collection import Collection
 from typing import Tuple, Dict
 import datetime
 
@@ -10,12 +8,6 @@ import datetime
 @pytest.fixture
 def schema_to_dict():
     return [({}, {}), ({"a": 1}, {"a": 1}), ({"a": 3 + 1j}, {"a": 3 + 1j})]
-
-
-# @pytest.fixture
-# def log_collections() -> Tuple[Collection, Collection]:
-#     mongolg_db = pymongo.MongoClient()
-#     return mongolg_db['Logs'], mongolg_db['__monolg']
 
 
 @pytest.fixture

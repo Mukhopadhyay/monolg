@@ -96,33 +96,3 @@ class TestMonolg:
         assert len(sys_logs) == 0  # There should be 0 logs, open and close
 
         self.client.close()
-
-    @pytest.mark.monolg
-    @pytest.mark.available
-    def test_sys_log_disabled(self):
-        """
-        Case: Connecting the Monolg instance to the running MongoDB with sys_log set to False
-        Precondition: MongoDB should be available on localhost:27017
-        """
-        mlg = monolg.Monolg(system_log=False)  # Monolg instance
-
-        # Clearing the collections
-        logs, system = self.get_collections()
-        logs.delete_many({})
-        system.delete_many({})
-
-        mlg.connect()  # Try to establish connection
-
-        assert mlg.connected  # Default logs collection should be connected
-        assert not mlg.sys_connected  # System logs collection should be connected
-
-        mlg.close()  # Close the connection
-
-        # ----------------------------------------------------
-        # Check that we're putting nothing in monolg
-        # ----------------------------------------------------
-        sys_logs = list(system.find({}))
-
-        assert len(sys_logs) == 0  # There should be 0 logs, open and close
-
-        self.client.close()

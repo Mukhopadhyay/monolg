@@ -4,4 +4,4 @@ __author__ = "Pranesh Mukhopadhyay <praneshmukherjee7@gmail.com>"
 from monolg import errors
 from monolg.mongo_log import Monolg
 
-__all__ = [Monolg, errors]
+__all__ = ["Monolg", "errors"]
