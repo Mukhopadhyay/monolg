@@ -1,8 +1,18 @@
 name: Tests
 
 on:
-  - push
-  - pull_request
+    push:
+      branches:
+        - "master"
+      paths:
+        - "monolg/**.py"
+    pull_request:
+      types:
+        - opened
+      branches:
+        - master
+      paths:
+        - "monolg/**.py"
 
 jobs:
   test:
