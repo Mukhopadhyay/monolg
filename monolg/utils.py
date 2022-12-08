@@ -18,7 +18,8 @@ def get_datetime(
 
     Args:
         as_string (Optional[bool], optional): Whether to return as string or not. Defaults to False.
-        fmt (Optional[str], optional): If as_string is set to True, what format should be used. Any datetime.strftime() compatible formt works. Defaults to None.
+        fmt (Optional[str], optional): If as_string is set to True, what format should be used.
+                                       Any datetime.strftime() compatible formt works. Defaults to None.
         dt (Optional[datetime], optional): datetime object that is to be formatted. Defaults to None.
 
     Returns:
@@ -42,8 +43,9 @@ def print_log(dt: Union[datetime, str], message: str, level: str, name: str, fmt
         name (str): Name used for this log statement.
         fmt (Optional[str], optional): format string for the datetime object. Defaults to None.
     """
-    if fmt:
-        dt = dt.strftime(fmt)
+    if isinstance(dt, datetime):
+        if isinstance(fmt, str):
+            dt = dt.strftime(fmt)
     color = color_map.get(level, Fore.GREEN)
     head = f"{dt} [{color}{level}]"
     print(head, f"[{name}] {message}")

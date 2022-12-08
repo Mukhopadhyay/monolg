@@ -40,7 +40,8 @@ class Monolg(object):
 
     Levels:
         info:       Default logging level
-        warning:    Warnings should be called when something unexpected happens but it isn't code-breaking. (but probably needs attention)
+        warning:    Warnings should be called when something unexpected happens
+                    but it isn't code-breaking. (but probably needs attention)
         error:      Some exception that caused the system to malfunction.
         critical:   Some serious error has occured that requires your attention.
 
@@ -61,7 +62,7 @@ class Monolg(object):
     DEFAULT_DB_NAME: str = config["DEFAULT"]["PROJECT_NAME"].capitalize()
     DEFFAULT_COLLECTION_NAME: str = config["MONGO"]["DEFAULT_COLLECTION_NAME"]
 
-    SCHEMA = {
+    SCHEMA: Dict[str, Any] = {
         "info": _schemas.Info,
         "warning": _schemas.Warning,
         "error": _schemas.Error,
@@ -127,11 +128,11 @@ class Monolg(object):
             pass  # In notebooks __file__ won't work
 
         # Following will be populated after .connect() is invoked
-        self.db: pymongo.database.Database = None
-        self.collection: pymongo.collection.Collection = None
-        self._sys_collection: pymongo.collection.Collection = None
+        self.db: Optional[pymongo.database.Database] = None
+        self.collection: Optional[pymongo.collection.Collection] = None
+        self._sys_collection: Optional[pymongo.collection.Collection] = None
 
-        self.__connection_time: datetime = None
+        self.__connection_time: Optional[datetime] = None
 
         # These will be populated later
         self.db_name = None
@@ -144,17 +145,18 @@ class Monolg(object):
         self.verbose = verbose
         self.sys_verbose = sys_verbose
 
-        self.sys_log = system_log
-        # Is this instance connected to Mongo??
-        self.__connected = False
+        # Should we be logging monolg's system logs?
+        self.sys_log: bool = system_log
+        # Is this instance connected to Mongo?
+        self.__connected: bool = False
         # Was this instance previously connected?
-        self.__connected_before = False
+        self.__connected_before: bool = False
         # Is the system log collection connected to Mongo??
-        self.__sys_connected = False
+        self.__sys_connected: bool = False
         # Is this object instantiated using the client?
-        self.__is_from_client = kwargs.get("is_from_client", False)
+        self.__is_from_client: bool = kwargs.get("is_from_client", False)
 
-        self.client: pymongo.MongoClient = client
+        self.client: Optional[pymongo.MongoClient] = client
         if not self.client:
             self.client = pymongo.MongoClient(
                 host=self.host, port=self.port, serverSelectionTimeoutMS=self.serv_sel_timeout
@@ -162,7 +164,12 @@ class Monolg(object):
 
     @classmethod
     def from_client(cls, client: pymongo.MongoClient, **kwargs) -> object:
-        """_summary_
+        """Allows instantiation from an existing pymongo.MongoClient object.
+        Please note that in this case, if the connection is ever closed, we will not be
+        able to "reopen" the connection using Monolg.reopen()
+
+        Please refer to this page on further docs:
+        https://monolg.readthedocs.io/en/latest/connecting-monolg/#instantiating-from-an-existing-connection
 
         Args:
             client (pymongo.MongoClient): _description_
@@ -264,7 +271,8 @@ class Monolg(object):
             ConnectionNotReopened: _description_
         """
         # If this object was creating using a client then raise
-        message = "Cannot re-establish connection. Object was instantiated using client.\nTry instantiating using the constructor."
+        message = """Cannot re-establish connection. Object was instantiated using client.
+        Try instantiating using the constructor."""
         if self.__is_from_client:
             raise ConnectionNotReopened(message)
 
@@ -363,7 +371,7 @@ class Monolg(object):
             name (Optional[str], optional): Name of this particular log operation, if nothing provided
                                             value from self.name will be taken, else `Monolg` will be used.
             level (Optional[str], optional): The level of logging, possible values can be 'info', 'warning',
-                                             'critical' & 'error'. If nothigns provided then the level provided
+                                             'critical' & 'error'. If nothign is provided then the level provided
                                              while creating the object will be used. If nothing was provided
                                              level will default to 'info'.
                                              Defaults to None.
@@ -382,7 +390,7 @@ class Monolg(object):
             raise NotConnectedError(msg)
 
         if not level:
-            level: str = self.level
+            level = self.level
 
         fmt: str = datetime_fmt
         if not fmt:
@@ -401,7 +409,8 @@ class Monolg(object):
         Args:
             message (str): The message that is to be logged.
             name (Optional[str], optional): Name of this particular log operation, if nothing provided
-                                            value from self.name will be taken, else `Monolg` will be used. Defaults to None.
+                                            value from self.name will be taken, else `Monolg` will be used.
+                                            Defaults to None.
             data (Optional[Dict[str, Any]], optional): Accepts any dictionary which is to be saved as
                                                        'data' in the corresponding mongo db entry.
                                                        Defaults to None.
@@ -416,7 +425,8 @@ class Monolg(object):
         Args:
             message (str): The message that is to be logged.
             name (Optional[str], optional): Name of this particular log operation, if nothing provided
-                                            value from self.name will be taken, else `Monolg` will be used. Defaults to None.
+                                            value from self.name will be taken, else `Monolg` will be used.
+                                            Defaults to None.
             data (Optional[Dict[str, Any]], optional): Accepts any dictionary which is to be saved as
                                                        'data' in the corresponding mongo db entry.
                                                        Defaults to None.
@@ -429,7 +439,8 @@ class Monolg(object):
         Args:
             message (str): The message that is to be logged.
             name (Optional[str], optional): Name of this particular log operation, if nothing provided
-                                            value from self.name will be taken, else `Monolg` will be used. Defaults to None.
+                                            value from self.name will be taken, else `Monolg` will be used.
+                                            Defaults to None.
             data (Optional[Dict[str, Any]], optional): Accepts any dictionary which is to be saved as
                                                        'data' in the corresponding mongo db entry.
                                                        Defaults to None.
@@ -444,7 +455,8 @@ class Monolg(object):
         Args:
             message (str): The message that is to be logged.
             name (Optional[str], optional): Name of this particular log operation, if nothing provided
-                                            value from self.name will be taken, else `Monolg` will be used. Defaults to None.
+                                            value from self.name will be taken, else `Monolg` will be used.
+                                            Defaults to None.
             data (Optional[Dict[str, Any]], optional): Accepts any dictionary which is to be saved as
                                                        'data' in the corresponding mongo db entry.
                                                        Defaults to None.
