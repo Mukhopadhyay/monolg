@@ -5,7 +5,6 @@ Schema classes used in the project
 from datetime import datetime
 from typing import Optional, Any, Dict
 
-
 class Schema:
     """The base Schema class, creates instance attributes
     based on the kwargs in Runtime, which is why we can
