@@ -96,3 +96,19 @@ class TestMonolg:
         assert len(sys_logs) == 0  # There should be 0 logs, open and close
 
         self.client.close()
+
+    @pytest.test.monolg
+    @pytest.mark.available
+    def test_all_sys_logs(self):
+        """
+        Case: Trying to recreate all default system logs and checking their verbose
+        Precondition: MongoDB should be available on localhost:27017
+        """
+        mlg = monolg.Monolg()  # Monolg instance
+
+        # Clearing the collections
+        logs, system = self.get_collections()
+        logs.delete_many({})
+        system.delete_many({})
+
+        pass  # TODO: This is where you try and recreate every single system logs

@@ -19,7 +19,7 @@ mlg.connect()
 mlg.clear_logs()
 mlg.clear_sys_logs()
 
-# mlg.close()
+mlg.close()
 
 # mlg.close()
 # mlg.reopen()

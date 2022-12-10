@@ -356,7 +356,7 @@ class Monolg(object):
         name: Optional[str] = None,
         level: Optional[str] = None,
         data: Optional[Dict[str, Any]] = None,
-        datetime_as_string: Optional[bool] = False,  # Defaults to setting it as datetime objects
+        datetime_as_string: bool = False,  # Defaults to setting it as datetime objects
         datetime_fmt: Optional[str] = None,
         verbose: Optional[bool] = True,  # This overrides the instance attribute for verbose
         **kwargs,
