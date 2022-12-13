@@ -32,3 +32,20 @@ warn_unreachable = true
 # warn_unreachable = true
 # warn_unused_configs = true
 # no_implicit_reexport = true
+
+
+[tool.pytest.ini_options]
+addopts = [
+  "--ignore=tests/test_monolg.py"
+]
+filterwarnings = [
+    "ignore::DeprecationWarning"
+]
+markers = [
+    "schema      : Schema related tests",
+    "configs     : Tests for all available config keys",
+    "utils       : Utility tests",
+    "monolg      : Tests for the Monolg class",
+    "unavailable : MongoDB is unavailable",
+    "available   : MongoDB is available"
+]
