@@ -286,7 +286,7 @@ class Monolg(object):
         self.connect(self.db_name, self.collection_name)
         if self.sys_log:
             if self.__sys_connected:
-                # Log that monolg is connection
+                # Log that monolg is connected
                 data = {"database": self.db_name, "collection": self.collection_name, "time": self.__connection_time}
                 self.log(
                     "monolg connection reopened",
@@ -310,12 +310,14 @@ class Monolg(object):
         if self.__connected:
             if self.sys_log:
                 if self.__sys_connected:
-                    # Log that monolg is connection
+                    data = {"database": self.db_name, "collection": self.collection_name, "time": self.__connection_time}
+                    # Log that monolg connection to Mongo is closed
                     self.log(
                         "monolg connection with mongodb closed",
                         "system",
                         "info",
                         collection=self._sys_collection,
+                        data=data,
                         verbose=self.sys_verbose,
                     )
 
@@ -356,7 +358,7 @@ class Monolg(object):
         name: Optional[str] = None,
         level: Optional[str] = None,
         data: Optional[Dict[str, Any]] = None,
-        datetime_as_string: Optional[bool] = False,  # Defaults to setting it as datetime objects
+        datetime_as_string: bool = False,  # Defaults to setting it as datetime objects
         datetime_fmt: Optional[str] = None,
         verbose: Optional[bool] = True,  # This overrides the instance attribute for verbose
         **kwargs,
@@ -475,11 +477,13 @@ class Monolg(object):
 
             if self.sys_log:
                 if self.__sys_connected:
+                    data = {"database": self.db_name, "collection": self.collection_name, "time": self.__connection_time}
                     self.log(
                         "All monolg logs cleared",
                         "system",
                         "warning",
                         collection=self._sys_collection,
+                        data=data,
                         verbose=self.sys_verbose,
                     )
 

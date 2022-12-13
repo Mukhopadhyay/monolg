@@ -13,13 +13,14 @@ from monolg import Monolg
 
 mlg = Monolg(verbose=True)
 
-
-mlg.connect()
-
 mlg.clear_logs()
 mlg.clear_sys_logs()
 
-# mlg.close()
+mlg.connect()
+
+
+
+mlg.close()
 
 # mlg.close()
 # mlg.reopen()
