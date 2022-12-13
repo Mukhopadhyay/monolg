@@ -97,7 +97,7 @@ class TestMonolg:
 
         self.client.close()
 
-    @pytest.test.monolg
+    @pytest.mark.monolg
     @pytest.mark.available
     def test_all_sys_logs(self):
         """
@@ -111,4 +111,43 @@ class TestMonolg:
         logs.delete_many({})
         system.delete_many({})
 
-        pass  # TODO: This is where you try and recreate every single system logs
+        mlg.connect()       # Logs connection established
+        mlg.close()         # Logs connection closed
+        mlg.reopen()        # Logs connection reopened
+        mlg.clear_logs()    # Logs informing clear operation
+
+        # ----------------------------------------------------
+        # Check whatever we're putting in Mongo is right
+        # ----------------------------------------------------
+        sys_logs = list(system.find({}))
+
+        assert len(sys_logs) == 5  # There should be 4 logs
+
+        for l in sys_logs:
+            assert l["name"] == "system"
+            assert isinstance(l["_id"], bson.ObjectId)
+
+        assert sys_logs[0]["message"] == "monolg connected to mongodb"
+        assert sys_logs[0]["level"] == "info"
+        assert sys_logs[0]["data"]["database"] == "Monolg"
+        assert sys_logs[0]["data"]["collection"] == "Logs"
+
+        assert sys_logs[1]["message"] == "monolg connection with mongodb closed"
+        assert sys_logs[1]["level"] == "info"
+        assert sys_logs[1]["data"]["database"] == "Monolg"
+        assert sys_logs[1]["data"]["collection"] == "Logs"
+
+        assert sys_logs[2]["message"] == "monolg connected to mongodb"
+        assert sys_logs[2]["level"] == "info"
+        assert sys_logs[2]["data"]["database"] == "Monolg"
+        assert sys_logs[2]["data"]["collection"] == "Logs"
+
+        assert sys_logs[3]["message"] == "monolg connection reopened"
+        assert sys_logs[3]["level"] == "info"
+        assert sys_logs[3]["data"]["database"] == "Monolg"
+        assert sys_logs[3]["data"]["collection"] == "Logs"
+
+        assert sys_logs[4]["message"] == "All monolg logs cleared"
+        assert sys_logs[4]["level"] == "warning"
+        assert sys_logs[4]["data"]["database"] == "Monolg"
+        assert sys_logs[4]["data"]["collection"] == "Logs"
