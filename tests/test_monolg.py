@@ -137,17 +137,17 @@ class TestMonolg:
         assert sys_logs[1]["data"]["database"] == "Monolg"
         assert sys_logs[1]["data"]["collection"] == "Logs"
 
-        assert sys_logs[2]["message"] == "monolg connected to mongodb"
+        # assert sys_logs[2]["message"] == "monolg connected to mongodb"
+        # assert sys_logs[2]["level"] == "info"
+        # assert sys_logs[2]["data"]["database"] == "Monolg"
+        # assert sys_logs[2]["data"]["collection"] == "Logs"
+
+        assert sys_logs[2]["message"] == "monolg connection reopened"
         assert sys_logs[2]["level"] == "info"
         assert sys_logs[2]["data"]["database"] == "Monolg"
         assert sys_logs[2]["data"]["collection"] == "Logs"
 
-        assert sys_logs[3]["message"] == "monolg connection reopened"
-        assert sys_logs[3]["level"] == "info"
+        assert sys_logs[3]["message"] == "All monolg logs cleared"
+        assert sys_logs[3]["level"] == "warning"
         assert sys_logs[3]["data"]["database"] == "Monolg"
         assert sys_logs[3]["data"]["collection"] == "Logs"
-
-        assert sys_logs[4]["message"] == "All monolg logs cleared"
-        assert sys_logs[4]["level"] == "warning"
-        assert sys_logs[4]["data"]["database"] == "Monolg"
-        assert sys_logs[4]["data"]["collection"] == "Logs"
