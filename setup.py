@@ -2,17 +2,17 @@
 
 from setuptools import setup, find_packages
 
-with open("README.md") as readme_file:
+with open("README.md", "r") as readme_file:
     readme = readme_file.read()
 
-with open("HISTORY.md") as history_file:
+with open("HISTORY.md", "r") as history_file:
     history = history_file.read()
 
-with open("requirements.txt") as req:
-    requirements = req.split()
+with open("requirements.txt", "r") as req:
+    requirements = req.read().split()
 
-with open("requirements.dev.txt") as dev_req:
-    dev_requirements = dev_req.split()
+with open("requirements.dev.txt", "r") as dev_req:
+    dev_requirements = dev_req.read().split()
 
 setup(
     author="Pranesh Mukhopadhyay",
@@ -32,6 +32,7 @@ setup(
     description="Centralized logging for Python using MongoDB",
     install_requires=requirements,
     license="MIT license",
+    long_description_content_type="text/markdown",
     long_description=readme + "\n\n" + history,
     include_package_data=True,
     keywords="monolg",
