@@ -1,10 +1,70 @@
-site_name: Monolg
+site_name: Monolg Documentation
+site_author: Pranesh Mukhopadhyay
 site_url: https://monolg.readthedocs.io/en/latest/
+site_description: Documentation for the simple, lightweight MongoDB based python logging library, monolg.
+
+plugins:
+  - search
+  - tags:
+      tags_file: tags.md
+  - git-revision-date-localized:
+      enable_creation_date: true
+
 nav:
-    - Getting started: getting-started.md
-    - Connecting Monolg to MongoDB: connecting-monolg.md
-    - Setting up the logger: settings-and-configs.md
+    - Home: index.md
+    - Getting started:
+        - getting-started.md
+        - Connecting Monolg to MongoDB: connecting-monolg.md
+        - Setting up the logger: settings-and-configs.md
     - Usage Examples: examples.md
     - Developer's Note: devs-note.md
+
+markdown_extensions:
+  - pymdownx.superfences
+  - pymdownx.tabbed:
+      alternate_style: true
+  - admonition
+  - pymdownx.details
+  - pymdownx.tasklist:
+      custom_checkbox: true
+      clickable_checkbox: false
+
 theme:
-    name: material
+  name: material
+
+  features:
+    - navigation.tabs
+
+  palette:
+
+    # Palette toggle for light mode
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: teal
+      accent: light green
+      toggle:
+        # icon: material/lightbulb
+        icon: material/brightness-4
+        name: Switch to dark mode
+
+    # Palette toggle for dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: teal
+      accent: light green
+      toggle:
+        # icon: material/lightbulb-outline
+        icon: material/brightness-7
+        name: Switch to light mode
+
+extra:
+  social:
+    - icon: fontawesome/brands/twitter
+      link: https://twitter.com/allthingstensor
+    - icon: fontawesome/brands/linkedin
+      link: https://www.linkedin.com/in/praneshmukhopadhyay/
+    - icon: fontawesome/brands/github
+      link: https://github.com/Mukhopadhyay
+
+repo_url: https://github.com/Mukhopadhyay/monolg
+repo_name: Mukhopadhyay/monolg

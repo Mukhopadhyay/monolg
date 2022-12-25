@@ -5,8 +5,8 @@ Simple Centralized logging for Python using MongoDB
 
 [![PyPi](https://img.shields.io/pypi/v/monolg.svg)](https://pypi.python.org/pypi/monolg) [![Build Status](https://app.travis-ci.com/Mukhopadhyay/monolg.svg?branch=master)](https://app.travis-ci.com/Mukhopadhyay/monolg)
 
-+ **Licence**: MIT License
-+ **Documentation**: https://monolg.readthedocs.io
++ **Licence**: [**MIT License**](https://github.com/Mukhopadhyay/monolg/blob/master/LICENSE)
++ **Documentation**: [monolg.readthedocs.io](https://monolg.readthedocs.io)
 
 ## What is `monolg`?
 You know those times when you've deployed your applications on the cloud, which logs every step of way precisely onto your `*.log` files, and now everytime you know the application misbehaves you cannot be bothered to look into those log files.
