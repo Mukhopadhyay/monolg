@@ -11,7 +11,7 @@ with open("HISTORY.md") as history_file:
 with open("requirements.txt") as req:
     requirements = req.split()
 
-with open("requirements_dev.txt") as dev_req:
+with open("requirements.dev.txt") as dev_req:
     dev_requirements = dev_req.split()
 
 setup(
