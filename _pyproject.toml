@@ -16,3 +16,47 @@ classifiers = [
 ]
 keywords = ["logging", "mongodb", "monolg"]
 dependencies = {file = ["requirements.txt"]}
+requires-python = ">=3.8"
+
+
+    [project.urls]
+    repository    = "https://github.com/Mukhopadhyay/monolg"
+    documentation = "https://monolg.readthedocs.io/en/latest/"
+
+[tool.black]
+target-version = ["py39"]
+color = false
+line-length = 120
+exclude = '''
+/(
+    \.git
+    | \.mypy_cache
+    | \.tox
+    | \.venv
+    | build
+    | venv
+)/
+'''
+
+[tool.mypy]
+mypy_path = "monolg"
+warn_return_any = true
+warn_unused_configs = true
+warn_unused_ignores = true
+warn_unreachable = true
+
+[tool.pytest.ini_options]
+addopts = [
+  "--ignore=tests/test_monolg.py"
+]
+filterwarnings = [
+    "ignore::DeprecationWarning"
+]
+markers = [
+    "schema      : Schema related tests",
+    "configs     : Tests for all available config keys",
+    "utils       : Utility tests",
+    "monolg      : Tests for the Monolg class",
+    "unavailable : MongoDB is unavailable",
+    "available   : MongoDB is available"
+]
