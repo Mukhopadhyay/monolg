@@ -14,6 +14,7 @@ nav:
     - Home: index.md
     - Getting started:
         - getting-started.md
+        - Setting up MongoDB: setting-up-mongo.md
         - Connecting Monolg to MongoDB: connecting-monolg.md
         - Setting up the logger: settings-and-configs.md
     - Usage Examples: examples.md
@@ -28,6 +29,10 @@ markdown_extensions:
   - pymdownx.tasklist:
       custom_checkbox: true
       clickable_checkbox: false
+  - attr_list
+  - pymdownx.emoji:
+      emoji_index: !!python/name:materialx.emoji.twemoji
+      emoji_generator: !!python/name:materialx.emoji.to_svg
 
 theme:
   name: material

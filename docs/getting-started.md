@@ -6,15 +6,24 @@ Let us get started with...
 
 ## Installation
 
-Monolg can be installed from PyPI using the following:
+### with pip <small>recommended</small>
+The updated stable version of monolg is maintained in **Python packing index** or [**PyPI**](https://pypi.org/project/monolg/) so it can easily be downloaded using `pip`. If you're using a virual environment like `venv` then inside the activated environment do the following
 
-```bash
-$ pip install monolg
-```
+=== "Latest"
+    ```bash
+    $ pip install monolg
+    ```
+=== "`0.0.1`"
+    ```bash
+    $ pip intall monolg=="0.0.1"
+    ```
+
+### with github :fontawesome-brands-github:
+Monolg can be downloaded directly from [**github**](https://github.com/Mukhopadhyay/monolg) as well, using the following command you'd be able to install monolg locally from the `master` branch
 
 or you can install directly from github using.
 ```bash
-$ pip install git+https://github.com/Mukhopadhyay/monolg.git
+$ pip install git+https://github.com/Mukhopadhyay/monolg.git@master
 ```
 
 Comparing code with the `logging` module
