@@ -75,3 +75,15 @@ extra:
 
 repo_url: https://github.com/Mukhopadhyay/monolg
 repo_name: Mukhopadhyay/monolg
+
+extra:
+  social:
+    - icon: fontawesome/brands/twitter
+      link: https://twitter.com/allthingstensor
+      name: Mukhopadhyay on Twitter
+    - icon: fontawesome/brands/github
+      link: https://github.com/Mukhopadhyay/monolg
+      name: monolg on Github
+    - icon: fontawesome/brands/linkedin
+      link: https://www.linkedin.com/praneshmukhopadhyay
+      name: Mukhopadhyay on LinkedIn

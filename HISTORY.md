@@ -1,6 +1,7 @@
 ## History
 
-### 0.0.0 (2022-09-29)
+### 0.0.1 <small>December 26, 2022</small>
++ **Release**: First release to [**PyPI**](https://pypi.org/project/monolg/0.0.1/)
+
+### 0.0.0 <small>September 29, 2022</small>
 + Initial commit to Github
-### 0.0.1 (2022-12-26)
-+ **Release**: First release to PyPI (https://pypi.org/project/monolg/0.0.1/)
