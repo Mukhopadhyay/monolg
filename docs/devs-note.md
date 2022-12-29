@@ -1,8 +1,8 @@
 # Developer's Note
 
-## Tests
+## Unit tests
 
-The unittests for this library is written using [`pytest`](https://docs.pytest.org/). The configs for the tests module can be found in the root of the project as `pytest.ini`.
+The unittests for this library is written using [`pytest`](https://docs.pytest.org/). The configs for the tests module can be found in the root of the project as `pyproject.toml`.
 
 Now most of the tests for this project can be performed without any hiccup, but when it comes to testing with the MongoDB conection, we'd have to rely on Docker
 or the CICD pipelines. So by default the script that tests `monolg` in presence of the MongoDB database, will stay excluded. So,
@@ -38,16 +38,22 @@ Following the different [pytest markers](https://docs.pytest.org/en/7.1.x/exampl
 pytest -v -m configs
 ```
 
+--- 
+
 ## Documentation
 
-The documentation for this project uses ``mkdocs``
+More on contributing to documentation [here](https://github.com/Mukhopadhyay/monolg/blob/master/CONTRIBUTING.md#write-documentation)
 
-Serving the docs locally
-```bash
-mkdocs serve
-```
+The documentation for this project uses `mkdocs-material`, after cloning the repository locally do the following to serve/build the docs.
 
-Building the docs locally
-```bash
-mkdocs build
-```
+=== "Serving the docs"
+    ```bash
+    mkdocs serve
+    ```
+
+=== "Building the docs"
+    ```bash
+    mkdocs build
+    ```
+
+If you serve the docs using `mkdocs serve` you'll find the documentation running on your [localhost:8000](http://localhost:8000).
