@@ -18,7 +18,9 @@ nav:
         - Connecting Monolg to MongoDB: connecting-monolg.md
         - Setting up the logger: settings-and-configs.md
     - Usage Examples: examples.md
-    - Developer's Note: devs-note.md
+    - Developer's Note:
+        - devs-note.md
+        - Change log: history.md
 
 markdown_extensions:
   - pymdownx.superfences
